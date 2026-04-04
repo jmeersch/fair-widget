@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Builder — Julian's Business Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── Brand: teal #37C9C1 · blue #1F23B9 · orange #E55937 ── */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito','Segoe UI',sans-serif;min-height:100vh;transition:background .5s ease;}
+body.ph0{background:linear-gradient(145deg,#1F23B9 0%,#37C9C1 100%);}
+body.ph1{background:linear-gradient(145deg,#0d9e97 0%,#37C9C1 60%,#5dd8d2 100%);}
+body.ph2{background:linear-gradient(145deg,#1a1e9a 0%,#1F23B9 60%,#3a3fd4 100%);}
+body.ph3{background:linear-gradient(145deg,#c43d1e 0%,#E55937 60%,#f07350 100%);}
+body.phF{background:linear-gradient(145deg,#1F23B9 0%,#37C9C1 50%,#E55937 100%);}
+
+/* Progress */
+.progress-bar{position:fixed;top:0;left:0;width:100%;height:5px;background:rgba(255,255,255,.15);z-index:999;}
+.progress-fill{height:100%;background:white;border-radius:3px;transition:width .45s ease;}
+
+/* Layout */
+.wrap{max-width:660px;margin:0 auto;padding:52px 16px 56px;min-height:100vh;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* Screen header */
+.phase-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);color:white;padding:5px 14px;border-radius:20px;font-size:.8em;font-weight:700;margin-bottom:13px;}
+.sh{color:white;margin-bottom:20px;}
+.sh-title{font-size:1.85em;font-weight:900;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,.2);}
+.sh-sub{font-size:.97em;opacity:.85;margin-top:6px;line-height:1.55;}
+
+/* Card */
+.card{background:white;border-radius:22px;padding:26px 24px;box-shadow:0 12px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:20px;}
+
+/* Labels */
+.slabel{font-weight:800;color:#1e293b;font-size:.93em;margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.hint{font-size:.8em;color:#64748b;font-style:italic;line-height:1.45;margin-bottom:7px;}
+.divider{height:1px;background:#f1f5f9;}
+
+/* Toggle chips */
+.tgrid{display:flex;flex-wrap:wrap;gap:7px;}
+.tbtn{background:#f8fafc;border:2px solid #e2e8f0;border-radius:10px;padding:8px 13px;font-size:.88em;font-weight:600;color:#475569;cursor:pointer;transition:all .15s;user-select:none;font-family:inherit;}
+.tbtn:hover{background:#f1f5f9;border-color:#cbd5e1;}
+.tbtn.on{background:#37C9C1;border-color:#37C9C1;color:white;}
+.tbtn.on.ph2-sel{background:#1F23B9;border-color:#1F23B9;}
+.tbtn.on.ph3-sel{background:#E55937;border-color:#E55937;}
+
+/* Add-your-own row */
+.add-own-row{display:flex;gap:8px;margin-top:8px;}
+.add-own-inp{flex:1;border:2px solid #e2e8f0;border-radius:10px;padding:8px 12px;font-family:inherit;font-size:.85em;font-weight:600;outline:none;transition:border-color .15s;}
+.add-own-inp:focus{border-color:#37C9C1;}
+.add-own-btn{background:#37C9C1;border:none;border-radius:10px;color:white;font-size:1.2em;font-weight:700;padding:0 14px;cursor:pointer;font-family:inherit;}
+.add-own-btn:hover{background:#2db5ad;}
+
+/* Radio options */
+.rgrid{display:flex;flex-direction:column;gap:8px;}
+.ropt{border:2px solid #e2e8f0;border-radius:12px;padding:12px 15px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:11px;}
+.ropt:hover{background:#f8fafc;border-color:#cbd5e1;}
+.ropt.on{border-color:#1F23B9;background:#eef0ff;}
+.ropt.teal.on{border-color:#37C9C1;background:#e8fafa;}
+.ropt.orange.on{border-color:#E55937;background:#fdf0ec;}
+.ri{font-size:1.25em;flex-shrink:0;margin-top:1px;}
+.rl{font-weight:700;color:#1e293b;font-size:.93em;}
+.rd{font-size:.8em;color:#64748b;margin-top:2px;}
+
+/* Idea cards */
+.idea-card{border:2px solid #e2e8f0;border-radius:12px;padding:12px 15px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:11px;}
+.idea-card:hover{border-color:#37C9C1;background:#e8fafa;}
+.idea-card.on{border-color:#37C9C1;background:#e8fafa;}
+.idea-icon{font-size:1.4em;flex-shrink:0;}
+.idea-name{font-weight:700;color:#1e293b;font-size:.93em;}
+.idea-why{font-size:.79em;color:#64748b;margin-top:2px;}
+
+/* Inputs */
+.inp{width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-family:inherit;font-size:.93em;font-weight:600;outline:none;transition:border-color .15s;color:#1e293b;}
+.inp:focus{border-color:#37C9C1;}
+.pfix{position:relative;}.pfix-sym{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-weight:700;}
+.pfix .inp{padding-left:22px;}
+
+/* Budget rows */
+.b-row{display:flex;gap:8px;align-items:center;}
+.del-btn{width:30px;height:30px;border:none;background:#fee2e2;color:#b91c1c;border-radius:8px;cursor:pointer;font-size:1.1em;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+
+/* Cost splitter */
+.splitter-box{background:#f0f9ff;border:2px solid #7dd3fc;border-radius:12px;padding:14px;}
+.splitter-toggle{background:none;border:none;font-family:inherit;font-size:.82em;font-weight:700;color:#0369a1;cursor:pointer;padding:0;text-decoration:underline;}
+.splitter-inner{margin-top:12px;display:flex;flex-direction:column;gap:10px;}
+.splitter-result{background:#e0f2fe;border-radius:8px;padding:10px;font-weight:700;color:#0369a1;font-size:.88em;text-align:center;}
+
+/* Flags */
+.flag{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:12px;border:2px solid;}
+.flag.g{background:#f0fdf4;border-color:#86efac;}
+.flag.y{background:#fffbeb;border-color:#fcd34d;}
+.flag.r{background:#fef2f2;border-color:#fca5a5;}
+.fi{font-size:1.3em;flex-shrink:0;}.ft{font-weight:700;color:#1e293b;font-size:.93em;}
+.fb{font-size:.8em;color:#64748b;margin-top:3px;line-height:1.4;}
+
+/* Cost total */
+.cost-total{background:#f0fdf4;border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center;}
+.cost-lbl{font-weight:700;color:#1e293b;}.cost-val{font-size:1.5em;font-weight:900;color:#37C9C1;}
+
+/* Bubbles */
+.bubble-row{display:flex;gap:10px;flex-wrap:wrap;}
+.bubble{flex:1;min-width:80px;border-radius:14px;padding:14px 10px;text-align:center;}
+.bubble .bv{font-size:1.3em;font-weight:900;}.bubble .bl{font-size:.75em;font-weight:700;margin-top:3px;opacity:.75;}
+.b-orange{background:#fff7ed;color:#c2410c;}.b-green{background:#f0fdf4;color:#15803d;}
+.b-blue{background:#eff6ff;color:#1d4ed8;}.b-purple{background:#faf5ff;color:#7c3aed;}
+.b-teal{background:#e8fafa;color:#0d9e97;}.b-red{background:#fef2f2;color:#b91c1c;}
+
+/* Price track */
+.price-track{height:18px;border-radius:9px;position:relative;margin:16px 0 8px;background:linear-gradient(to right,#ef4444 0%,#f59e0b 25%,#22c55e 55%,#1F23B9 80%,#E55937 100%);}
+.price-marker{position:absolute;top:-6px;width:4px;height:30px;background:#1e293b;border-radius:3px;transition:left .3s ease;box-shadow:0 0 0 3px rgba(255,255,255,.8);}
+.track-labels{display:flex;justify-content:space-between;font-size:.68em;color:#94a3b8;font-weight:700;}
+
+/* Charity box */
+.charity-box{background:#fdf4ff;border:2px solid #e9d5ff;border-radius:12px;padding:14px;}
+.charity-pct-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
+.pct-btn{flex:1;min-width:50px;border:2px solid #e2e8f0;border-radius:10px;padding:8px 4px;text-align:center;font-size:.85em;font-weight:700;cursor:pointer;background:#f8fafc;color:#475569;font-family:inherit;transition:all .15s;}
+.pct-btn:hover{border-color:#a855f7;}.pct-btn.on{background:#a855f7;border-color:#a855f7;color:white;}
+.charity-result{background:#f3e8ff;border-radius:10px;padding:12px;font-size:.85em;font-weight:700;color:#7c3aed;margin-top:10px;line-height:1.5;}
+
+/* Toggle switch */
+.toggle-row{display:flex;align-items:center;gap:12px;}
+.toggle-sw{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle-sw input{opacity:0;width:0;height:0;}
+.toggle-sl{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#e2e8f0;border-radius:24px;transition:.3s;}
+.toggle-sl:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;}
+input:checked+.toggle-sl{background:#a855f7;}
+input:checked+.toggle-sl:before{transform:translateX(20px);}
+.toggle-lbl{font-weight:700;color:#1e293b;font-size:.93em;}
+
+/* Summary */
+.snap-sec{border-radius:14px;padding:18px;}
+.snap-h{font-weight:900;font-size:1em;margin-bottom:12px;}
+.snap-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.05);}
+.snap-row:last-child{border-bottom:none;}
+.sk{font-size:.82em;color:#64748b;font-weight:600;}
+.sv{font-size:.82em;color:#1e293b;font-weight:700;text-align:right;max-width:60%;}
+.nxt-box{background:#f8fafc;border-radius:14px;padding:18px;}
+.nxt-h{font-weight:900;color:#1e293b;margin-bottom:12px;}
+.nxt-step{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1f5f9;}
+.nxt-step:last-child{border-bottom:none;}
+.nxt-n{font-size:1.4em;font-weight:900;color:#37C9C1;flex-shrink:0;line-height:1;margin-top:2px;}
+.nxt-t{font-weight:700;color:#1e293b;font-size:.9em;}.nxt-d{font-size:.79em;color:#64748b;margin-top:2px;line-height:1.4;}
+
+/* Buttons */
+.btn-row{display:flex;gap:12px;margin-top:22px;}
+.btn{border:none;border-radius:12px;padding:13px 22px;font-family:inherit;font-weight:800;font-size:.95em;cursor:pointer;transition:all .18s;}
+.btn-p{background:#1F23B9;color:white;flex:1;}.btn-p:hover{background:#181cb0;transform:translateY(-1px);}
+.btn-t{background:#37C9C1;color:white;flex:1;}.btn-t:hover{background:#2db5ad;transform:translateY(-1px);}
+.btn-s{background:rgba(255,255,255,.2);color:white;border:2px solid rgba(255,255,255,.3);}
+.btn-s:hover{background:rgba(255,255,255,.3);}
+.btn-sm{background:#f8fafc;border:2px solid #e2e8f0;color:#475569;padding:9px 16px;border-radius:10px;font-family:inherit;font-size:.85em;font-weight:700;cursor:pointer;}
+.btn-sm:hover{border-color:#cbd5e1;}
+.btn-hub{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:white;font-family:inherit;font-weight:700;font-size:.8em;padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .15s;}
+.btn-hub:hover{background:rgba(255,255,255,.25);}
+
+/* ── HUB ── */
+.hub-grid{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
+.hub-card{background:white;border-radius:18px;padding:18px 20px;box-shadow:0 8px 32px rgba(0,0,0,.15);display:flex;align-items:center;gap:14px;transition:all .2s;}
+.hub-card:hover{transform:translateY(-1px);box-shadow:0 12px 40px rgba(0,0,0,.2);}
+.hub-icon{font-size:2em;flex-shrink:0;}
+.hub-body{flex:1;min-width:0;}
+.hub-title{font-weight:900;color:#1e293b;font-size:1em;}
+.hub-status{font-size:.75em;font-weight:700;padding:2px 10px;border-radius:20px;display:inline-block;margin-top:3px;}
+.hub-status.ns{background:#f1f5f9;color:#64748b;}
+.hub-status.ip{background:#fef9c3;color:#a16207;}
+.hub-status.done{background:#dcfce7;color:#15803d;}
+.hub-info{font-size:.8em;color:#64748b;margin-top:4px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hub-btn{background:#1F23B9;color:white;border:none;border-radius:10px;padding:10px 16px;font-family:inherit;font-weight:800;font-size:.82em;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s;}
+.hub-btn:hover{background:#181cb0;}
+.hub-btn.teal{background:#37C9C1;}.hub-btn.teal:hover{background:#2db5ad;}
+.hub-btn.orange{background:#E55937;}.hub-btn.orange:hover{background:#cf4828;}
+
+/* Hub live summary */
+.hub-summary{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:16px 20px;color:white;margin-bottom:20px;}
+.hub-sum-title{font-weight:800;font-size:.85em;opacity:.8;margin-bottom:10px;letter-spacing:.05em;text-transform:uppercase;}
+.hub-sum-rows{display:flex;flex-direction:column;gap:6px;}
+.hub-sum-row{display:flex;justify-content:space-between;font-size:.88em;}
+.hub-sum-label{opacity:.75;font-weight:600;}
+.hub-sum-val{font-weight:800;}
+.hub-sum-val.good{color:#6ee7b7;}
+.hub-sum-val.warn{color:#fcd34d;}
+
+/* Welcome screen */
+.welcome-choice{display:flex;flex-direction:column;gap:12px;margin:24px 0;}
+.wc-card{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);border-radius:16px;padding:16px 20px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:14px;color:white;}
+.wc-card:hover{background:rgba(255,255,255,.22);transform:translateY(-1px);}
+.wc-icon{font-size:2em;flex-shrink:0;}
+.wc-title{font-weight:800;font-size:1em;}
+.wc-desc{font-size:.8em;opacity:.75;margin-top:2px;}
+.wc-arrow{margin-left:auto;font-size:1.3em;opacity:.6;}
+
+/* Pre-check */
+.precheck-result{border-radius:12px;padding:16px;text-align:center;margin-top:4px;}
+.precheck-result .big{font-size:2em;font-weight:900;margin:6px 0;}
+.precheck-result .sub{font-size:.85em;font-weight:600;}
+
+@media(max-width:440px){.sh-title{font-size:1.55em;}.card{padding:18px 16px;}}
+</style>
+</head>
+<body class="ph0">
+<div class="progress-bar"><div class="progress-fill" id="pBar" style="width:0%"></div></div>
+<div class="wrap">
+
+<!-- ══════════ SCREEN 0 — WELCOME ══════════ -->
+<div class="screen active" id="s0">
+  <div class="sh" style="text-align:center;padding-top:30px">
+    <div style="font-size:3.5em;margin-bottom:12px">🚀</div>
+    <div class="sh-title">The Business Builder</div>
+    <div class="sh-sub">Build your business plan your way — start wherever makes sense for you!</div>
+  </div>
+  <div class="welcome-choice">
+    <div class="wc-card" onclick="go('h',1)">
+      <div class="wc-icon">📦</div>
+      <div><div class="wc-title">Start with Your Product</div><div class="wc-desc">Figure out what to sell based on your passion, skills, and market</div></div>
+      <div class="wc-arrow">→</div>
+    </div>
+    <div class="wc-card" onclick="go('h',5)">
+      <div class="wc-icon">👥</div>
+      <div><div class="wc-title">Start with Your Customers</div><div class="wc-desc">Find your audience first — who will buy and what can they pay?</div></div>
+      <div class="wc-arrow">→</div>
+    </div>
+    <div class="wc-card" onclick="go('h',7)">
+      <div class="wc-icon">💵</div>
+      <div><div class="wc-title">Start with Your Price</div><div class="wc-desc">Know your costs, set your price, and figure out how much you'll make</div></div>
+      <div class="wc-arrow">→</div>
+    </div>
+  </div>
+  <div style="text-align:center;color:rgba(255,255,255,.6);font-size:.8em;font-weight:600">Julian's Business Lab · julianbusinessman.com</div>
+</div>
+
+<!-- ══════════ SCREEN H — HUB DASHBOARD ══════════ -->
+<div class="screen" id="sh">
+  <div class="sh">
+    <div class="phase-pill">🏠 Your Business Hub</div>
+    <div class="sh-title">Your Business Builder 📋</div>
+    <div class="sh-sub">Work on any section — your numbers update as you go!</div>
+  </div>
+
+  <div id="hub-summary-box" style="display:none" class="hub-summary">
+    <div class="hub-sum-title">📊 Live Numbers</div>
+    <div class="hub-sum-rows" id="hub-sum-rows"></div>
+  </div>
+
+  <div class="hub-grid">
+    <div class="hub-card">
+      <div class="hub-icon">📦</div>
+      <div class="hub-body">
+        <div class="hub-title">Your Product</div>
+        <div class="hub-status ns" id="hstat-p">Not started</div>
+        <div class="hub-info" id="hinfo-p">What will you sell?</div>
+      </div>
+      <button class="hub-btn teal" onclick="go(1)">Start →</button>
+    </div>
+    <div class="hub-card">
+      <div class="hub-icon">👥</div>
+      <div class="hub-body">
+        <div class="hub-title">Your Customers</div>
+        <div class="hub-status ns" id="hstat-c">Not started</div>
+        <div class="hub-info" id="hinfo-c">Who will buy from you?</div>
+      </div>
+      <button class="hub-btn" onclick="go(5)">Start →</button>
+    </div>
+    <div class="hub-card">
+      <div class="hub-icon">💵</div>
+      <div class="hub-body">
+        <div class="hub-title">Your Price &amp; Budget</div>
+        <div class="hub-status ns" id="hstat-pr">Not started</div>
+        <div class="hub-info" id="hinfo-pr">What will you charge?</div>
+      </div>
+      <button class="hub-btn orange" onclick="go(7)">Start →</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px;flex-direction:column">
+    <button class="btn btn-p" onclick="go('F')" id="see-plan-btn" style="display:none">🎉 See My Full Business Plan →</button>
+    <button class="btn btn-s" onclick="go(0)">← Change Starting Point</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 1 — PRODUCT INPUTS (passion + skills + market) ══════════ -->
+<div class="screen" id="s1">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">📦 Your Product — Step 1</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">What are you into? 🌟</div>
+    <div class="sh-sub">Pick everything that fits — the more you share, the better your ideas will be!</div>
+  </div>
+  <div class="card">
+
+    <!-- Passions -->
+    <div>
+      <div class="slabel">❤️ What are you passionate about?</div>
+      <div class="hint">Pick all your interests</div>
+      <div class="tgrid" id="passGrid">
+        <button class="tbtn" data-g="passions" data-v="art"        onclick="tog(this)">🎨 Art &amp; Drawing</button>
+        <button class="tbtn" data-g="passions" data-v="cooking"    onclick="tog(this)">🍪 Cooking &amp; Baking</button>
+        <button class="tbtn" data-g="passions" data-v="crafting"   onclick="tog(this)">🧵 Crafting &amp; Making</button>
+        <button class="tbtn" data-g="passions" data-v="sports"     onclick="tog(this)">⚽ Sports &amp; Outdoors</button>
+        <button class="tbtn" data-g="passions" data-v="tech"       onclick="tog(this)">💻 Tech &amp; Gaming</button>
+        <button class="tbtn" data-g="passions" data-v="helping"    onclick="tog(this)">🤝 Helping People</button>
+        <button class="tbtn" data-g="passions" data-v="animals"    onclick="tog(this)">🐾 Animals</button>
+        <button class="tbtn" data-g="passions" data-v="plants"     onclick="tog(this)">🌱 Plants &amp; Nature</button>
+        <button class="tbtn" data-g="passions" data-v="music"      onclick="tog(this)">🎵 Music</button>
+        <button class="tbtn" data-g="passions" data-v="organizing" onclick="tog(this)">📋 Organizing</button>
+      </div>
+      <div class="add-own-row">
+        <input type="text" class="add-own-inp" id="customPassionInp" placeholder="Add your own passion…" />
+        <button class="add-own-btn" onclick="addOwn('passions','customPassionInp','passGrid')">+</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Skills -->
+    <div>
+      <div class="slabel">💪 What are you good at making, providing, or doing?</div>
+      <div class="hint">Pick your strongest skills</div>
+      <div class="tgrid" id="skillGrid">
+        <button class="tbtn" data-g="skills" data-v="handmade"  onclick="tog(this)">✋ Making things by hand</button>
+        <button class="tbtn" data-g="skills" data-v="baking"    onclick="tog(this)">👨‍🍳 Cooking or baking</button>
+        <button class="tbtn" data-g="skills" data-v="drawing"   onclick="tog(this)">✏️ Drawing or painting</button>
+        <button class="tbtn" data-g="skills" data-v="service"   onclick="tog(this)">🛠️ Doing tasks for others</button>
+        <button class="tbtn" data-g="skills" data-v="sourcing"  onclick="tog(this)">🛍️ Finding &amp; reselling</button>
+        <button class="tbtn" data-g="skills" data-v="growing"   onclick="tog(this)">🌿 Growing plants</button>
+        <button class="tbtn" data-g="skills" data-v="tech"      onclick="tog(this)">📱 Tech &amp; design</button>
+        <button class="tbtn" data-g="skills" data-v="talking"   onclick="tog(this)">🗣️ Talking to people</button>
+        <button class="tbtn" data-g="skills" data-v="sewing"    onclick="tog(this)">🪡 Sewing &amp; stitching</button>
+      </div>
+      <div class="add-own-row">
+        <input type="text" class="add-own-inp" id="customSkillInp" placeholder="Add your own skill…" />
+        <button class="add-own-btn" onclick="addOwn('skills','customSkillInp','skillGrid')">+</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Market needs -->
+    <div>
+      <div class="slabel">👀 What do you see people wanting or needing?</div>
+      <div class="hint">Look around your neighborhood, school, and community — what gaps do you notice?</div>
+      <div class="tgrid" id="needGrid">
+        <button class="tbtn" data-g="needs" data-v="food"     onclick="tog(this)">🥤 Food &amp; snacks</button>
+        <button class="tbtn" data-g="needs" data-v="gifts"    onclick="tog(this)">🎁 Gifts &amp; special items</button>
+        <button class="tbtn" data-g="needs" data-v="chores"   onclick="tog(this)">🧹 Help with tasks &amp; chores</button>
+        <button class="tbtn" data-g="needs" data-v="unique"   onclick="tog(this)">🎨 Handmade &amp; unique items</button>
+        <button class="tbtn" data-g="needs" data-v="useful"   onclick="tog(this)">⚡ Useful everyday things</button>
+        <button class="tbtn" data-g="needs" data-v="fun"      onclick="tog(this)">🎉 Fun &amp; entertainment</button>
+        <button class="tbtn" data-g="needs" data-v="pets"     onclick="tog(this)">🐶 Pet products &amp; care</button>
+        <button class="tbtn" data-g="needs" data-v="outdoor"  onclick="tog(this)">🌳 Outdoor &amp; garden help</button>
+        <button class="tbtn" data-g="needs" data-v="comfort"  onclick="tog(this)">☕ Comfort &amp; relaxation</button>
+        <button class="tbtn" data-g="needs" data-v="kids"     onclick="tog(this)">👧 Things kids love to buy</button>
+      </div>
+      <div class="add-own-row">
+        <input type="text" class="add-own-inp" id="customNeedInp" placeholder="Add something you've noticed people need…" />
+        <button class="add-own-btn" onclick="addOwn('needs','customNeedInp','needGrid')">+</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go('h')">← Hub</button>
+    <button class="btn btn-t" onclick="go(2)">See My Ideas →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 2 — IDEAS ══════════ -->
+<div class="screen" id="s2">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">📦 Your Product — Step 2</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">Your Idea Sparks ✨</div>
+    <div class="sh-sub">Based on everything you picked, here are ideas that could work for you!</div>
+  </div>
+  <div class="card">
+    <div>
+      <div class="slabel">💡 Ideas matched to your passions, skills &amp; what people need:</div>
+      <div class="hint">Pick one to explore — or type your own below</div>
+      <div id="ideaGrid" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+    <div>
+      <div class="slabel">✏️ Or write your own idea:</div>
+      <input type="text" class="inp" id="customIdea" placeholder="e.g. Origami animals, Slime kits, Jewelry…" oninput="pickCustom()" />
+    </div>
+    <div id="idea-picked-badge" style="display:none;background:#e8fafa;border:2px solid #37C9C1;border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:.75em;color:#0d9e97;font-weight:800;text-transform:uppercase;letter-spacing:.05em">You picked</div>
+      <div id="idea-picked-name" style="font-size:1.2em;font-weight:900;color:#1e293b;margin-top:4px"></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(1)">← Back</button>
+    <button class="btn btn-t" onclick="go(3)">Check if it's doable →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 3 — PRE-CHECK ══════════ -->
+<div class="screen" id="s3">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">📦 Your Product — Step 3</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">Quick Cost Check 💡</div>
+    <div class="sh-sub">Before diving in, let's get a rough idea of what starting will cost — and whether you can make it work!</div>
+  </div>
+  <div class="card">
+
+    <div>
+      <div class="slabel">📦 Roughly how many items do you think you'd make to sell?</div>
+      <input type="number" class="inp" id="estItems" placeholder="e.g. 20" min="1" oninput="updPrecheck()" />
+    </div>
+
+    <div>
+      <div class="slabel">💰 What's your best guess for cost per item?</div>
+      <div class="hint">Just a rough estimate — we'll calculate it more precisely later!</div>
+      <div class="pfix">
+        <span class="pfix-sym">$</span>
+        <input type="number" class="inp" id="estCostPer" placeholder="e.g. 2.50" min="0" step="0.50" oninput="updPrecheck()" />
+      </div>
+    </div>
+
+    <div id="precheck-result" style="display:none">
+      <div class="precheck-result" id="precheck-box">
+        <div style="font-size:.85em;font-weight:600">To start making <span id="pc-items">?</span> items you'd need roughly:</div>
+        <div class="big" id="pc-total">$0</div>
+        <div class="sub" id="pc-sub"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="slabel">🎯 What's the MOST you could realistically spend to get started?</div>
+      <div class="hint">This is YOUR number — there's no right or wrong answer. What feels manageable for you?</div>
+      <div class="pfix">
+        <span class="pfix-sym">$</span>
+        <input type="number" class="inp" id="myBudget" placeholder="e.g. 15" min="0" step="5" oninput="updPrecheck()" />
+      </div>
+      <div id="budget-signal" style="display:none;margin-top:10px"></div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(2)">← Back</button>
+    <button class="btn btn-t" onclick="go(4)">See My Obstacle Report →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 4 — OBSTACLE SCAN ══════════ -->
+<div class="screen" id="s4">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">📦 Your Product — Step 4</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">Obstacle Scan 🔦</div>
+    <div class="sh-sub">Checking your idea for speed bumps before you start — so there are no surprises!</div>
+  </div>
+  <div class="card">
+    <div>
+      <div class="slabel">Scanning: <span id="obs-prod" style="color:#E55937">your idea</span></div>
+    </div>
+
+    <div>
+      <div class="slabel">💰 How much do you need to start? <span id="obs-budget-hint" style="font-size:.8em;font-weight:600;color:#64748b"></span></div>
+      <div class="rgrid" id="obs-cost-grid">
+        <div class="ropt teal" data-g="startCost" data-v="low"  onclick="rad(this)"><span class="ri">✅</span><div><div class="rl" id="obs-lbl-low">Low startup cost</div><div class="rd">Easy to get started</div></div></div>
+        <div class="ropt teal" data-g="startCost" data-v="mid"  onclick="rad(this)"><span class="ri">💛</span><div><div class="rl" id="obs-lbl-mid">Medium startup cost</div><div class="rd">Doable with some planning</div></div></div>
+        <div class="ropt teal" data-g="startCost" data-v="high" onclick="rad(this)"><span class="ri">⚠️</span><div><div class="rl" id="obs-lbl-high">High startup cost</div><div class="rd">May need a loan or smaller batch first</div></div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="slabel">⏱️ How long to make one item?</div>
+      <div class="rgrid">
+        <div class="ropt teal" data-g="timePer" data-v="quick" onclick="rad(this)"><span class="ri">⚡</span><div><div class="rl">Under 15 minutes</div><div class="rd">Fast! You can build up stock quickly</div></div></div>
+        <div class="ropt teal" data-g="timePer" data-v="med"   onclick="rad(this)"><span class="ri">⏳</span><div><div class="rl">15 min – 1 hour</div><div class="rd">Plan ahead and start making items early</div></div></div>
+        <div class="ropt teal" data-g="timePer" data-v="long"  onclick="rad(this)"><span class="ri">🕐</span><div><div class="rl">Over 1 hour</div><div class="rd">Be realistic about how many you can finish</div></div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="slabel">🏪 How easy are your supplies to get?</div>
+      <div class="rgrid">
+        <div class="ropt teal" data-g="supplies" data-v="easy" onclick="rad(this)"><span class="ri">✅</span><div><div class="rl">Easy — local store or I already have them</div><div class="rd">No supply chain worries</div></div></div>
+        <div class="ropt teal" data-g="supplies" data-v="some" onclick="rad(this)"><span class="ri">💛</span><div><div class="rl">Sort of — need a parent's help to order</div><div class="rd">Order early so they arrive before the event</div></div></div>
+        <div class="ropt teal" data-g="supplies" data-v="hard" onclick="rad(this)"><span class="ri">⚠️</span><div><div class="rl">Hard — not sure where to get them</div><div class="rd">May need to simplify or find alternatives</div></div></div>
+      </div>
+    </div>
+
+    <div id="obs-results" style="display:none;flex-direction:column;gap:8px"></div>
+
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-s" onclick="go(3)">← Back</button>
+      <button class="btn btn-t" id="obs-btn" onclick="showObstacles()">See My Report →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 5 — CUSTOMERS WHO + PROXIMITY ══════════ -->
+<div class="screen" id="s5">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">👥 Your Customers — Step 1</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">Who's going to buy from you? 🙋</div>
+    <div class="sh-sub">Knowing your customer is just as important as having a great product!</div>
+  </div>
+  <div class="card">
+    <div>
+      <div class="slabel">🙋 Who is most likely to buy <span id="cust-prod" style="color:#1F23B9">your product</span>?</div>
+      <div class="rgrid">
+        <div class="ropt" data-g="custType" data-v="kids"      onclick="rad(this)"><span class="ri">👦</span><div><div class="rl">Kids my age — friends, classmates</div><div class="rd">Budget: usually $1–$10 · Love fun, trendy, social items</div></div></div>
+        <div class="ropt" data-g="custType" data-v="adults"    onclick="rad(this)"><span class="ri">👩</span><div><div class="rl">Parents and adults</div><div class="rd">Budget: usually $5–$30 · Value quality and time-savers</div></div></div>
+        <div class="ropt" data-g="custType" data-v="families"  onclick="rad(this)"><span class="ri">👨‍👩‍👧</span><div><div class="rl">Families at events or fairs</div><div class="rd">Budget: usually $3–$25 · Love fun, unique, kid-made things</div></div></div>
+        <div class="ropt" data-g="custType" data-v="neighbors" onclick="rad(this)"><span class="ri">🏘️</span><div><div class="rl">Neighbors in my community</div><div class="rd">Budget: usually $5–$40 · Supportive — they know and trust you</div></div></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <div class="slabel">📍 Are these customers near you and easy to reach?</div>
+      <div class="rgrid">
+        <div class="ropt" data-g="proximity" data-v="yes"  onclick="rad(this)"><span class="ri">✅</span><div><div class="rl">Yes — I see them regularly</div><div class="rd">At school, on my street, or at events I already attend</div></div></div>
+        <div class="ropt" data-g="proximity" data-v="some" onclick="rad(this)"><span class="ri">💛</span><div><div class="rl">Sort of — I'd need to put myself out there</div><div class="rd">I know they exist but don't see them every day</div></div></div>
+        <div class="ropt" data-g="proximity" data-v="far"  onclick="rad(this)"><span class="ri">⚠️</span><div><div class="rl">Not really — they're hard to reach</div><div class="rd">I'd need a different strategy to find my customers</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go('h')">← Hub</button>
+    <button class="btn btn-p" onclick="go(6)">Next →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 6 — REACH + AFFORDABILITY ══════════ -->
+<div class="screen" id="s6">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">👥 Your Customers — Step 2</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">How will they find out — and can they pay? 📣</div>
+    <div class="sh-sub">The best product doesn't sell if nobody knows about it!</div>
+  </div>
+  <div class="card">
+    <div>
+      <div class="slabel">📣 How will you let people know you're selling?</div>
+      <div class="hint">Pick all the ways you'll spread the word</div>
+      <div class="tgrid" id="reachGrid">
+        <button class="tbtn" data-g="reach" data-v="wom"     onclick="tog(this)">💬 Word of mouth</button>
+        <button class="tbtn" data-g="reach" data-v="flyer"   onclick="tog(this)">📄 Flyers or signs</button>
+        <button class="tbtn" data-g="reach" data-v="social"  onclick="tog(this)">📱 Social media</button>
+        <button class="tbtn" data-g="reach" data-v="door"    onclick="tog(this)">🚪 Door-to-door</button>
+        <button class="tbtn" data-g="reach" data-v="event"   onclick="tog(this)">🎪 Being at a fair/event</button>
+        <button class="tbtn" data-g="reach" data-v="school"  onclick="tog(this)">🏫 Telling people at school</button>
+        <button class="tbtn" data-g="reach" data-v="samples" onclick="tog(this)">🎁 Free samples or demos</button>
+        <button class="tbtn" data-g="reach" data-v="adults"  onclick="tog(this)">👋 Ask adults to share</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <div class="slabel">💳 What price range can your customers realistically pay?</div>
+      <div class="hint">Think about the people you described — what do they usually spend on things like yours?</div>
+      <div class="rgrid">
+        <div class="ropt" data-g="afford" data-v="u5"    onclick="rad(this)"><span class="ri">💰</span><div><div class="rl">Under $5 — Small budget</div><div class="rd">e.g. kids spending their own pocket money</div></div></div>
+        <div class="ropt" data-g="afford" data-v="5-15"  onclick="rad(this)"><span class="ri">💰💰</span><div><div class="rl">$5–$15 — Medium budget</div><div class="rd">e.g. families at a fair or event</div></div></div>
+        <div class="ropt" data-g="afford" data-v="15-30" onclick="rad(this)"><span class="ri">💰💰💰</span><div><div class="rl">$15–$30 — Comfortable budget</div><div class="rd">e.g. adults who value handmade, quality items</div></div></div>
+        <div class="ropt" data-g="afford" data-v="30p"   onclick="rad(this)"><span class="ri">💰💰💰💰</span><div><div class="rl">$30+ — Bigger budget</div><div class="rd">e.g. specialized, time-intensive, or premium products</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(5)">← Back</button>
+    <button class="btn btn-p" onclick="go('h')">Done — Back to Hub 🏠</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 7 — BUDGET BUILDER ══════════ -->
+<div class="screen" id="s7">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">💵 Price &amp; Budget — Step 1</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">What does it cost to make? 🧮</div>
+    <div class="sh-sub">Every supply and every minute counts — let's add it all up for one <span id="budget-prod">item</span>.</div>
+  </div>
+  <div class="card">
+
+    <!-- Cost splitter tool -->
+    <div class="splitter-box">
+      <button class="splitter-toggle" onclick="toggleSplitter()">💡 Need help splitting the cost of a shared supply? Click here</button>
+      <div class="splitter-inner" id="splitter-inner" style="display:none">
+        <div class="hint" style="margin-bottom:0">Example: If a $3 bag of 50 beads gives you 20 beads per bracelet, each bracelet uses $1.20 worth of beads.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div style="flex:1;min-width:110px">
+            <div class="hint">Supply name</div>
+            <input type="text" class="add-own-inp" id="sp-name" placeholder="e.g. Ribbon" style="width:100%" />
+          </div>
+          <div style="flex:1;min-width:90px">
+            <div class="hint">Total cost ($)</div>
+            <div class="pfix"><span class="pfix-sym">$</span><input type="number" class="inp" id="sp-total" placeholder="3.00" min="0" step="0.01" oninput="updSplitter()" style="padding-left:20px;font-size:.85em" /></div>
+          </div>
+          <div style="flex:1;min-width:90px">
+            <div class="hint">Items it makes</div>
+            <input type="number" class="inp" id="sp-items" placeholder="50" min="1" oninput="updSplitter()" style="font-size:.85em" />
+          </div>
+          <div style="flex:1;min-width:90px">
+            <div class="hint">Used per item</div>
+            <input type="number" class="inp" id="sp-used" placeholder="20" min="1" oninput="updSplitter()" style="font-size:.85em" />
+          </div>
+        </div>
+        <div class="splitter-result" id="splitter-result">Fill in the numbers above to see the cost per item</div>
+        <button class="btn-sm" onclick="addSplitterToRow()" style="width:100%">+ Add this cost to my budget</button>
+      </div>
+    </div>
+
+    <!-- Materials rows -->
+    <div>
+      <div class="slabel">🧾 Materials &amp; Supplies <span style="color:#64748b;font-weight:500;font-size:.85em">(cost for ONE item)</span></div>
+      <div class="hint">Divide shared supplies: if one spool of ribbon ($3) makes 10 bracelets → $0.30 per bracelet. Use the splitter above!</div>
+      <div id="budgetRows" style="display:flex;flex-direction:column;gap:7px"></div>
+      <button class="btn-sm" onclick="addRow()" style="margin-top:8px;width:100%">+ Add a supply or material</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Time -->
+    <div>
+      <div class="slabel">⏱️ Your Time <span style="color:#64748b;font-weight:500;font-size:.85em">(for ONE item)</span></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:130px">
+          <div class="hint">Minutes to make one</div>
+          <input type="number" class="inp" id="timeMins" placeholder="e.g. 30" min="0" step="1" oninput="updBudget()" />
+        </div>
+        <div style="flex:1;min-width:130px">
+          <div class="hint">Your hourly rate ($)</div>
+          <div class="pfix"><span class="pfix-sym">$</span><input type="number" class="inp" id="hrRate" placeholder="e.g. 6" min="0" step="0.5" value="6" oninput="updBudget()" /></div>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:6px">💡 $5–$10/hr is a fair starting point for most kid businesses.</div>
+    </div>
+
+    <!-- Total -->
+    <div class="cost-total">
+      <div>
+        <div class="cost-lbl">Total cost per item</div>
+        <div style="font-size:.75em;color:#64748b;margin-top:2px" id="cost-breakdown">Materials: $0.00 + Time: $0.00</div>
+      </div>
+      <div class="cost-val" id="bTotal">$0.00</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go('h')">← Hub</button>
+    <button class="btn btn-t" onclick="go(8)">Set My Price →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 8 — PRICE SETTING + CHARITY ══════════ -->
+<div class="screen" id="s8">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">💵 Price &amp; Budget — Step 2</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">What should you charge? 💵</div>
+    <div class="sh-sub">Your cost tells you the minimum. Now let's find the right price for <span id="price-prod">your item</span>.</div>
+  </div>
+  <div class="card">
+
+    <!-- Cost recap -->
+    <div style="background:#f8fafc;border-radius:12px;padding:14px 16px;border:2px solid #e2e8f0">
+      <div class="slabel" style="margin-bottom:8px">📊 Your cost per item</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div class="bubble b-teal" style="flex:1"><div class="bv" id="disp-mat">$0.00</div><div class="bl">Materials</div></div>
+        <div class="bubble b-teal" style="flex:1"><div class="bv" id="disp-time">$0.00</div><div class="bl">Time</div></div>
+        <div class="bubble b-green" style="flex:1"><div class="bv" id="disp-total">$0.00</div><div class="bl">Total cost</div></div>
+      </div>
+    </div>
+
+    <!-- Suggested prices -->
+    <div>
+      <div class="slabel">🎯 Suggested prices — click one to use it:</div>
+      <div class="bubble-row" id="suggRow"></div>
+    </div>
+
+    <!-- Price input -->
+    <div>
+      <div class="slabel">✏️ My selling price:</div>
+      <div class="pfix"><span class="pfix-sym">$</span><input type="number" class="inp" id="myPrice" placeholder="0.00" min="0" step="0.25" oninput="updPriceCheck()" /></div>
+    </div>
+
+    <!-- Price track -->
+    <div id="priceCheckArea" style="display:none">
+      <div class="price-track"><div class="price-marker" id="pMarker" style="left:5%"></div></div>
+      <div class="track-labels"><span>📉 Too low</span><span>Thin margin</span><span>✅ Sweet spot</span><span>Pushing it</span><span>📈 Too high</span></div>
+      <div id="pDesc" style="margin-top:10px;font-weight:700;font-size:.9em;line-height:1.4"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Charity donation -->
+    <div class="charity-box">
+      <div class="toggle-row">
+        <label class="toggle-sw"><input type="checkbox" id="charityToggle" onchange="updCharity()"><span class="toggle-sl"></span></label>
+        <div class="toggle-lbl">🎗️ Donating a % of profits to charity?</div>
+      </div>
+      <div id="charity-inner" style="display:none;margin-top:12px">
+        <div class="hint" style="margin-bottom:6px">Pick the percentage of your profit per item you'll donate:</div>
+        <div class="charity-pct-row">
+          <button class="pct-btn" data-pct="5"  onclick="setPct(this)">5%</button>
+          <button class="pct-btn" data-pct="10" onclick="setPct(this)">10%</button>
+          <button class="pct-btn" data-pct="15" onclick="setPct(this)">15%</button>
+          <button class="pct-btn" data-pct="20" onclick="setPct(this)">20%</button>
+          <button class="pct-btn" data-pct="25" onclick="setPct(this)">25%</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <div class="hint" style="margin-bottom:0;white-space:nowrap">Or enter your own:</div>
+          <input type="number" class="inp" id="customPct" placeholder="e.g. 12" min="1" max="99" oninput="updCharity()" style="width:90px;font-size:.9em" />
+          <span style="color:#64748b;font-size:.88em;font-weight:700">%</span>
+        </div>
+        <div class="charity-result" id="charity-result" style="display:none"></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(7)">← Back</button>
+    <button class="btn btn-t" onclick="go(9)">Set My Goal →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 9 — SALES GOAL ══════════ -->
+<div class="screen" id="s9">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div class="phase-pill">💵 Price &amp; Budget — Step 3</div>
+      <button class="btn-hub" onclick="go('h')">🏠 Hub</button>
+    </div>
+    <div class="sh-title">Set Your Sales Goal 🎯</div>
+    <div class="sh-sub">You know your price. Now figure out how many you need to sell — and how much you'll actually keep!</div>
+  </div>
+  <div class="card">
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:140px">
+        <div class="slabel">💵 Earning goal:</div>
+        <div class="pfix"><span class="pfix-sym">$</span><input type="number" class="inp" id="earnGoal" placeholder="e.g. 50" min="0" step="5" oninput="updGoal()" /></div>
+      </div>
+      <div style="flex:1;min-width:140px">
+        <div class="slabel">📦 Items I'll have ready:</div>
+        <input type="number" class="inp" id="supplyN" placeholder="e.g. 20" min="0" step="1" oninput="updGoal()" />
+      </div>
+    </div>
+
+    <div id="goalResult" style="display:none">
+      <div class="bubble-row" id="goalBubbles"></div>
+      <div id="goalMsg" style="margin-top:12px;font-weight:700;font-size:.88em;color:#1e293b;line-height:1.5"></div>
+    </div>
+
+    <div id="charityGoalBox" style="display:none;background:#f3e8ff;border:2px solid #e9d5ff;border-radius:12px;padding:14px">
+      <div class="slabel" style="color:#7c3aed;margin-bottom:8px">🎗️ Charity breakdown</div>
+      <div id="charityGoalRows" style="display:flex;flex-direction:column;gap:5px;font-size:.85em;font-weight:700;color:#7c3aed"></div>
+    </div>
+
+    <div id="supplyCheck" style="display:none"></div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(8)">← Back</button>
+    <button class="btn btn-p" onclick="go('F')">See My Business Plan 🎉</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN F — FINAL SNAPSHOT ══════════ -->
+<div class="screen" id="sF">
+  <div class="sh">
+    <div class="phase-pill">🎉 Business Plan</div>
+    <div class="sh-title">You're ready to sell! 🚀</div>
+    <div class="sh-sub">Here's your complete, personalized business plan. Go back and tweak anything!</div>
+  </div>
+  <div class="card">
+
+    <div id="snap-header" style="text-align:center;padding:6px 0 2px">
+      <div id="snap-icon" style="font-size:2.2em;margin-bottom:8px">🎪</div>
+      <div id="snap-name" style="font-size:1.25em;font-weight:900;color:#1e293b"></div>
+    </div>
+
+    <div class="snap-sec" style="background:#fff7ed;border:1.5px solid #fed7aa">
+      <div class="snap-h" style="color:#c2410c">📦 Your Product</div>
+      <div class="snap-row"><div class="sk">What you're selling</div><div class="sv" id="sn-prod">—</div></div>
+      <div class="snap-row"><div class="sk">Startup cost level</div><div class="sv" id="sn-cost">—</div></div>
+      <div class="snap-row"><div class="sk">Time per item</div><div class="sv" id="sn-time">—</div></div>
+      <div class="snap-row"><div class="sk">Supplies access</div><div class="sv" id="sn-supp">—</div></div>
+    </div>
+
+    <div class="snap-sec" style="background:#faf5ff;border:1.5px solid #d8b4fe">
+      <div class="snap-h" style="color:#6d28d9">👥 Your Customers</div>
+      <div class="snap-row"><div class="sk">Customer type</div><div class="sv" id="sn-cust">—</div></div>
+      <div class="snap-row"><div class="sk">How close are they</div><div class="sv" id="sn-prox">—</div></div>
+      <div class="snap-row"><div class="sk">What they can pay</div><div class="sv" id="sn-afford">—</div></div>
+    </div>
+
+    <div class="snap-sec" style="background:#f0fdf4;border:1.5px solid #86efac">
+      <div class="snap-h" style="color:#15803d">💵 Your Price &amp; Goal</div>
+      <div class="snap-row"><div class="sk">Cost per item</div><div class="sv" id="sn-item-cost">—</div></div>
+      <div class="snap-row"><div class="sk">Your price</div><div class="sv" id="sn-price">—</div></div>
+      <div class="snap-row"><div class="sk">Profit per item</div><div class="sv" id="sn-profit">—</div></div>
+      <div class="snap-row" id="sn-charity-row" style="display:none"><div class="sk">Charity donation / item</div><div class="sv" id="sn-charity">—</div></div>
+      <div class="snap-row" id="sn-keep-row" style="display:none"><div class="sk">You keep / item</div><div class="sv" id="sn-keep">—</div></div>
+      <div class="snap-row"><div class="sk">Items to make</div><div class="sv" id="sn-supply">—</div></div>
+      <div class="snap-row"><div class="sk">Earning goal</div><div class="sv" id="sn-earn">—</div></div>
+    </div>
+
+    <div class="nxt-box">
+      <div class="nxt-h">🏁 Your 3 Most Important Next Steps</div>
+      <div id="nextSteps"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+      <button class="btn btn-s" style="flex:1;background:#f8fafc;color:#64748b;border:2px solid #e2e8f0;font-family:inherit" onclick="go('h')">🏠 Back to Hub (Edit Answers)</button>
+      <button onclick="resetAll()" style="flex:1;background:#f8fafc;border:2px solid #e2e8f0;padding:13px;border-radius:12px;cursor:pointer;color:#64748b;font-size:.85em;font-weight:700;font-family:inherit">🔄 Start Over</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+const S = {
+  passions:[], skills:[], needs:[],
+  idea:'',
+  estItems:0, estCostPer:0, myBudget:0,
+  startCost:'', timePer:'', supplies:'',
+  custType:'', proximity:'', reach:[], afford:'',
+  matCost:0, timeCost:0, totalCost:0,
+  myPrice:0, earnGoal:0, supplyN:0,
+  donateOn:false, donatePct:10
+};
+
+// ══════════════════════════════════════════════════════════════════
+// IDEA MAPS — passion → ideas AND need → ideas (separate pools)
+// ══════════════════════════════════════════════════════════════════
+const IDEAMAP = {
+  art:[
+    {i:'🎨',n:'Custom Drawings & Portraits',w:'Personal and unique — charge more for custom work'},
+    {i:'💌',n:'Greeting Cards & Mini Prints',w:'Quick to make, easy to gift — always a popular seller'},
+    {i:'📚',n:'Bookmarks with Original Art',w:'Very low material cost, high perceived value'}
+  ],
+  cooking:[
+    {i:'🍪',n:'Baked Goods (Cookies, Brownies)',w:'High demand at any event — people always want snacks'},
+    {i:'🍋',n:'Lemonade or Hot Chocolate Stand',w:'A classic crowd-pleaser — simple, fast, always in demand'},
+    {i:'🌾',n:'Homemade Granola or Snack Bags',w:'Easy to make in batches, very popular at fairs'}
+  ],
+  crafting:[
+    {i:'✨',n:'Friendship Bracelets',w:'Low cost, super popular — especially with kids your age'},
+    {i:'🗝️',n:'Keychains & Bag Charms',w:'Everyone needs one and they sell fast at fairs'},
+    {i:'🎀',n:'Hair Accessories (scrunchies, clips)',w:'Trendy, low material cost, and quick to make'}
+  ],
+  sports:[
+    {i:'⚽',n:'Sports-Themed Accessories',w:"Fans love gear that shows team spirit — find your community's sport"},
+    {i:'💧',n:'Water or Snacks at Sports Events',w:'Captive audience who is always hungry and thirsty'}
+  ],
+  tech:[
+    {i:'🏷️',n:'Custom Stickers or Decals',w:'If you can design on a device, stickers sell really well'},
+    {i:'📲',n:'Phone Case Decorating',w:'Personal and unique — people love one-of-a-kind items'},
+    {i:'🖨️',n:'Digital Art Prints',w:'Print at home, sell originals — high margin with low cost'}
+  ],
+  helping:[
+    {i:'🐕',n:'Dog Walking Service',w:'Neighbors with pets always need this — no supplies required'},
+    {i:'🏃',n:'Errand Running or Helper Service',w:'Adults love having reliable kids help them out'},
+    {i:'🧹',n:'Yard Work or Cleaning Service',w:'Service businesses have the highest profit margin!'}
+  ],
+  animals:[
+    {i:'🐾',n:'Dog Walking or Pet Sitting',w:'High demand in most neighborhoods — and you love doing it!'},
+    {i:'🦴',n:'Homemade Pet Treats',w:'Pet owners love buying healthy treats for their animals'},
+    {i:'🐦',n:'Birdhouses or Bird Feeders',w:'Popular gift item, especially for neighbors with gardens'}
+  ],
+  plants:[
+    {i:'🌵',n:'Potted Succulents or Mini Plants',w:'Easy to grow, cheap in bulk, and sell really well at fairs'},
+    {i:'🌿',n:'Fresh Herb Garden Kits',w:'Adults love herbs — rosemary, basil, mint — easy to grow and package'},
+    {i:'🪴',n:'Painted Flower Pots',w:'Combines art and plants — unique, giftable, high perceived value'}
+  ],
+  music:[
+    {i:'🎶',n:'Custom Poem or Song Writings',w:'Totally unique gift — nobody else at the fair will be selling these'},
+    {i:'🎵',n:'Homemade Instruments or Noise Makers',w:'Fun and unusual craft — great for younger kids at fairs'}
+  ],
+  organizing:[
+    {i:'🎁',n:'Gift Wrapping Service at Events',w:'Always needed at fairs and markets — fast to do, high value'},
+    {i:'📒',n:'Decorated Notebooks or Planners',w:'Personalized stationery sells well and is easy to produce'}
+  ]
+};
+
+// Market-need specific ideas (different from passion ideas)
+const NEEDMAP = {
+  food:[
+    {i:'🍋',n:'Lemonade or Refreshment Stand',w:'A timeless classic that always sells at outdoor events'},
+    {i:'🧃',n:'Homemade Juice or Smoothie Cups',w:'Healthy drink option people love — especially on warm days'},
+    {i:'🍫',n:'Candy or Treat Bags',w:'Low cost, high appeal — kids and adults both buy these'}
+  ],
+  gifts:[
+    {i:'🎁',n:'Gift Wrapping Service',w:'Always needed at fairs — fast to do, customers love it'},
+    {i:'💐',n:'Dried Flower Arrangements',w:'Beautiful, long-lasting gifts that buyers truly appreciate'},
+    {i:'🎀',n:'Personalized Gift Tags & Cards',w:'Low cost to make, easy to customize — strong demand'}
+  ],
+  chores:[
+    {i:'🧹',n:'Yard Work or Cleaning Service',w:'Service businesses have the highest profit margin — nearly 100%!'},
+    {i:'🚗',n:'Car Wash Service',w:'Easy to set up in any driveway — neighbors love the convenience'},
+    {i:'📦',n:'Moving or Carrying Help',w:'Simple labor that neighbors will pay well for'}
+  ],
+  unique:[
+    {i:'🎨',n:'Custom Hand-Painted Items',w:'One-of-a-kind products command premium prices'},
+    {i:'💍',n:'Handmade Jewelry',w:'Jewelry buyers appreciate craft and uniqueness — good margins'},
+    {i:'🧸',n:'Sewn or Stuffed Characters',w:'Unique, collectible, and people love supporting kid creators'}
+  ],
+  useful:[
+    {i:'📎',n:'Organizational Kits or Pouches',w:'Useful items people need every day — strong repeat demand'},
+    {i:'🔖',n:'Practical Bookmarks or Clips',w:'Low cost, high utility, quick to produce in volume'},
+    {i:'🧴',n:'Homemade Soaps or Bath Products',w:'People love natural products — great margins if you batch-make'}
+  ],
+  fun:[
+    {i:'🎮',n:'DIY Craft Kits for Kids',w:'Parents love buying activity kits — you package the supplies'},
+    {i:'🎲',n:'Homemade Card or Board Games',w:'Unique games stand out — people love supporting young creators'},
+    {i:'🧩',n:'Personalized Puzzle Sets',w:'Print a photo and turn it into a puzzle — surprisingly popular'}
+  ],
+  pets:[
+    {i:'🦴',n:'Homemade Pet Treats',w:'Pet owners spend freely on healthy treats for their animals'},
+    {i:'🐾',n:'Pet Photo Portraits',w:'Pet owners LOVE seeing their pet drawn — great custom product'},
+    {i:'🏷️',n:'Personalized Pet Name Tags',w:'Low material cost, high personal value — great niche product'}
+  ],
+  outdoor:[
+    {i:'🌵',n:'Potted Succulents or Mini Plants',w:'Easy to grow, cheap to buy in bulk, sell really well'},
+    {i:'🌿',n:'Fresh Herb Garden Kits',w:'Rosemary, basil, mint — adults love herbs, easy to package'},
+    {i:'🦋',n:'Wildflower Seed Packets',w:'Eco-friendly, beautiful, and very inexpensive to put together'}
+  ],
+  comfort:[
+    {i:'☕',n:'Cozy Gift Sets (tea, candles, etc.)',w:'Comfort items make great gifts — bundle for higher price'},
+    {i:'🧣',n:'Knitted or Crocheted Accessories',w:'Scarves, beanies — warm items always sell in colder weather'},
+    {i:'🕯️',n:'Homemade Candles or Wax Melts',w:'With a kit, candles are easy to make — and sell for great margins'}
+  ],
+  kids:[
+    {i:'🎨',n:'Slime or Putty Kits',w:'Kids LOVE slime — easy to make, high demand, great margins'},
+    {i:'✨',n:'Friendship Bracelets',w:'A forever classic — low cost, quick to make, always popular'},
+    {i:'🪁',n:'DIY Activity Kits',w:'Package supplies for a fun project — parents love buying these for kids'}
+  ]
+};
+
+const AFFORD = { u5:{max:5}, '5-15':{max:15}, '15-30':{max:30}, '30p':{max:60} };
+
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function go(n, autoNav) {
+  // Prep work before showing a screen
+  if (n===2)  buildIdeas();
+  if (n===3)  prepPrecheck();
+  if (n===4)  prepObstacle();
+  if (n===5)  document.getElementById('cust-prod').textContent = S.idea||'your product';
+  if (n===7) {
+    document.getElementById('budget-prod').textContent = S.idea||'item';
+    if (!document.getElementById('budgetRows').children.length) addRow();
+  }
+  if (n===8)  prepPricing();
+  if (n==='h') updHub();
+  if (n==='F') buildSnapshot();
+
+  const id = n==='h'?'sh':n==='F'?'sF':'s'+n;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updProgress(n);
+  updBg(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  // If a target sub-screen was passed (e.g. from welcome screen), navigate there
+  if (autoNav) setTimeout(()=>go(autoNav), 50);
+}
+
+function updProgress(n) {
+  const map = {0:0,'h':5,1:15,2:22,3:30,4:38,5:48,6:58,7:68,8:78,9:88,'F':100};
+  document.getElementById('pBar').style.width=(map[n]??50)+'%';
+}
+function updBg(n) {
+  let cls;
+  if(n===0||n==='h') cls='ph0';
+  else if(n==='F') cls='phF';
+  else if(n<=4) cls='ph1';
+  else if(n<=6) cls='ph2';
+  else cls='ph3';
+  document.body.className = cls;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// HUB — update cards and live summary
+// ══════════════════════════════════════════════════════════════════
+function updHub() {
+  // Product section status
+  const pDone = !!S.idea;
+  const pIP   = S.passions.length>0||S.skills.length>0||S.needs.length>0;
+  document.getElementById('hstat-p').textContent  = pDone?'✓ Done':pIP?'In progress…':'Not started';
+  document.getElementById('hstat-p').className    = 'hub-status '+(pDone?'done':pIP?'ip':'ns');
+  document.getElementById('hinfo-p').textContent  = pDone?'Selling: '+S.idea:pIP?'Keep going — pick your idea!':'What will you sell?';
+  document.querySelector('#sh .hub-card:nth-child(1) .hub-btn').textContent = pDone?'✏️ Edit →':'Start →';
+
+  // Customer section status
+  const cDone = !!(S.custType&&S.afford);
+  const cIP   = !!(S.custType||S.proximity||S.reach.length);
+  document.getElementById('hstat-c').textContent  = cDone?'✓ Done':cIP?'In progress…':'Not started';
+  document.getElementById('hstat-c').className    = 'hub-status '+(cDone?'done':cIP?'ip':'ns');
+  const custLabels = {kids:'Kids & friends',adults:'Parents & adults',families:'Families at events',neighbors:'Neighbors'};
+  document.getElementById('hinfo-c').textContent  = cDone?'Customers: '+(custLabels[S.custType]||S.custType):cIP?'Keep going — set affordability!':'Who will buy from you?';
+  document.querySelector('#sh .hub-card:nth-child(2) .hub-btn').textContent = cDone?'✏️ Edit →':'Start →';
+
+  // Price section status
+  const prDone = !!(S.myPrice>0&&S.totalCost>0);
+  const prIP   = !!(S.totalCost>0||S.myPrice>0);
+  document.getElementById('hstat-pr').textContent = prDone?'✓ Done':prIP?'In progress…':'Not started';
+  document.getElementById('hstat-pr').className   = 'hub-status '+(prDone?'done':prIP?'ip':'ns');
+  const profit = S.myPrice-S.totalCost;
+  document.getElementById('hinfo-pr').textContent = prDone?`Price $${S.myPrice.toFixed(2)} → $${profit.toFixed(2)} profit`:prIP?'Keep going — set your price!':'What will you charge?';
+  document.querySelector('#sh .hub-card:nth-child(3) .hub-btn').textContent = prDone?'✏️ Edit →':'Start →';
+
+  // Live summary
+  const sumRows = [];
+  if (S.idea) sumRows.push(['Product',S.idea]);
+  if (S.totalCost>0) sumRows.push(['Cost per item','$'+S.totalCost.toFixed(2)]);
+  if (S.myPrice>0) {
+    sumRows.push(['Your price','$'+S.myPrice.toFixed(2)]);
+    if (S.totalCost>0) {
+      const p = S.myPrice-S.totalCost;
+      const cls = p>0?'good':'warn';
+      sumRows.push(['Profit per item',{val:'$'+p.toFixed(2),cls}]);
+    }
+  }
+  if (S.myPrice>0&&S.earnGoal>0&&S.totalCost>0) {
+    const net = (S.myPrice-S.totalCost)*(S.donateOn?1-S.donatePct/100:1);
+    if (net>0) {
+      const needed = Math.ceil(S.earnGoal/net);
+      sumRows.push(['Need to sell',needed+' items to earn $'+S.earnGoal]);
+    }
+  }
+  if (S.donateOn&&S.myPrice>0&&S.totalCost>0) {
+    const donate = (S.myPrice-S.totalCost)*(S.donatePct/100);
+    sumRows.push(['Charity donation',`$${donate.toFixed(2)}/item (${S.donatePct}%)`]);
+  }
+
+  const sumBox = document.getElementById('hub-summary-box');
+  const sumRowsEl = document.getElementById('hub-sum-rows');
+  if (sumRows.length>0) {
+    sumBox.style.display='block';
+    sumRowsEl.innerHTML = sumRows.map(r=>{
+      const val = typeof r[1]==='object'?r[1].val:r[1];
+      const cls = typeof r[1]==='object'?r[1].cls:'';
+      return `<div class="hub-sum-row"><span class="hub-sum-label">${r[0]}</span><span class="hub-sum-val ${cls}">${val}</span></div>`;
+    }).join('');
+  } else {
+    sumBox.style.display='none';
+  }
+
+  // Show "See Full Plan" when enough filled in
+  const hasEnough = pIP||cIP||prIP;
+  document.getElementById('see-plan-btn').style.display = hasEnough?'block':'none';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TOGGLE CHIPS + ADD YOUR OWN
+// ══════════════════════════════════════════════════════════════════
+function tog(btn) {
+  const g=btn.dataset.g, v=btn.dataset.v;
+  btn.classList.toggle('on');
+  if (btn.classList.contains('on')) { if(!S[g].includes(v)) S[g].push(v); }
+  else S[g] = S[g].filter(x=>x!==v);
+}
+
+function addOwn(group, inputId, gridId) {
+  const inp = document.getElementById(inputId);
+  const val = inp.value.trim();
+  if (!val) return;
+  inp.value = '';
+  const key = 'custom_'+val.toLowerCase().replace(/\s+/g,'_');
+  if (S[group].includes(key)) return; // don't add duplicate
+  S[group].push(key);
+  const btn = document.createElement('button');
+  btn.className = 'tbtn on';
+  btn.dataset.g = group;
+  btn.dataset.v = key;
+  btn.textContent = val;
+  btn.onclick = ()=>tog(btn);
+  document.getElementById(gridId).appendChild(btn);
+}
+
+// Radio
+function rad(el) {
+  const g=el.dataset.g, v=el.dataset.v;
+  document.querySelectorAll(`[data-g="${g}"]`).forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  S[g]=v;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// IDEA GENERATION
+// ══════════════════════════════════════════════════════════════════
+function buildIdeas() {
+  const grid = document.getElementById('ideaGrid');
+  grid.innerHTML='';
+  let pool=[];
+  // From passions
+  (S.passions||[]).forEach(p=>{
+    if (IDEAMAP[p]) pool.push(...IDEAMAP[p]);
+    // custom passion → add a few generic ideas
+    if (p.startsWith('custom_')) pool.push({i:'💡',n:'Custom Idea: '+p.replace('custom_','').replace(/_/g,' '),w:'A business based on your unique interest — you know it best!'});
+  });
+  // From market needs (different pool!)
+  (S.needs||[]).forEach(n=>{
+    if (NEEDMAP[n]) pool.push(...NEEDMAP[n]);
+  });
+  // Deduplicate by name
+  const seen=new Set();
+  pool = pool.filter(x=>{ if(seen.has(x.n)) return false; seen.add(x.n); return true; });
+  // If empty, use defaults
+  if (!pool.length) pool=[
+    {i:'🍋',n:'Lemonade or Refreshment Stand',w:'A timeless classic that always sells'},
+    {i:'💌',n:'Greeting Cards',w:'Low cost, high perceived value — always a good seller'},
+    {i:'✨',n:'Friendship Bracelets',w:'Easy to make and very popular at fairs'}
+  ];
+  pool.slice(0,7).forEach(idea=>{
+    const d=document.createElement('div');
+    d.className='idea-card'+(S.idea===idea.n?' on':'');
+    d.innerHTML=`<div class="idea-icon">${idea.i}</div><div><div class="idea-name">${idea.n}</div><div class="idea-why">${idea.w}</div></div>`;
+    d.onclick=()=>{
+      document.querySelectorAll('.idea-card').forEach(c=>c.classList.remove('on'));
+      d.classList.add('on');
+      S.idea=idea.n;
+      document.getElementById('customIdea').value='';
+      showPickedBadge(idea.n);
+    };
+    grid.appendChild(d);
+  });
+  if (S.idea) showPickedBadge(S.idea);
+}
+
+function showPickedBadge(name) {
+  document.getElementById('idea-picked-name').textContent=name;
+  document.getElementById('idea-picked-badge').style.display='block';
+}
+
+function pickCustom() {
+  const v=document.getElementById('customIdea').value.trim();
+  if (v) {
+    document.querySelectorAll('.idea-card').forEach(c=>c.classList.remove('on'));
+    S.idea=v;
+    showPickedBadge(v);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PRE-CHECK
+// ══════════════════════════════════════════════════════════════════
+function prepPrecheck() {
+  if (document.getElementById('estItems').value) updPrecheck();
+}
+
+function updPrecheck() {
+  const items = parseInt(document.getElementById('estItems').value)||0;
+  const cost  = parseFloat(document.getElementById('estCostPer').value)||0;
+  const budget= parseFloat(document.getElementById('myBudget').value)||0;
+
+  S.estItems=items; S.estCostPer=cost; S.myBudget=budget;
+
+  const totalNeeded = items*cost;
+  const box = document.getElementById('precheck-result');
+  const pctEl = document.getElementById('pc-items');
+  const totEl = document.getElementById('pc-total');
+  const subEl = document.getElementById('pc-sub');
+  const pBox  = document.getElementById('precheck-box');
+
+  if (items>0&&cost>0) {
+    box.style.display='block';
+    pctEl.textContent = items;
+    totEl.textContent = '$'+totalNeeded.toFixed(2);
+    subEl.textContent = `(${items} items × $${cost.toFixed(2)} each)`;
+    if (budget>0) {
+      if (totalNeeded<=budget) {
+        pBox.style.background='#f0fdf4'; pBox.style.border='2px solid #86efac';
+        subEl.textContent += ' — ✅ Within your budget!';
+      } else {
+        pBox.style.background='#fef2f2'; pBox.style.border='2px solid #fca5a5';
+        const over = (totalNeeded-budget).toFixed(2);
+        subEl.textContent += ` — ⚠️ $${over} over your budget`;
+      }
+    } else {
+      pBox.style.background='#eff6ff'; pBox.style.border='2px solid #93c5fd';
+    }
+  } else {
+    box.style.display='none';
+  }
+
+  // Budget signal
+  const signalEl = document.getElementById('budget-signal');
+  if (budget>0&&totalNeeded>0) {
+    signalEl.style.display='block';
+    if (totalNeeded<=budget*0.4) {
+      signalEl.innerHTML='<div class="flag g"><div class="fi">✅</div><div><div class="ft">Very affordable for you!</div><div class="fb">Starting up will only use a small part of what you can spend. Low risk!</div></div></div>';
+    } else if (totalNeeded<=budget) {
+      signalEl.innerHTML='<div class="flag y"><div class="fi">⚠️</div><div><div class="ft">Tight but doable</div><div class="fb">You\'d be spending most of what you have. Consider starting with fewer items to keep risk low.</div></div></div>';
+    } else {
+      signalEl.innerHTML='<div class="flag r"><div class="fi">🚨</div><div><div class="ft">This might be too much for your budget</div><div class="fb">Consider making a smaller batch first, or choosing a lower-cost product so you can start without needing help.</div></div></div>';
+    }
+  } else {
+    signalEl.style.display='none';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// OBSTACLE SCAN — personalized labels
+// ══════════════════════════════════════════════════════════════════
+function prepObstacle() {
+  document.getElementById('obs-prod').textContent = S.idea||'your product';
+  const budget = S.myBudget||0;
+  const hint   = document.getElementById('obs-budget-hint');
+  if (budget>0) {
+    // Personalize the thresholds based on their stated budget
+    const lo = Math.round(budget*0.35);
+    const hi = Math.round(budget*0.8);
+    hint.textContent = `(your budget: $${budget})`;
+    document.getElementById('obs-lbl-low').textContent  = `Under $${lo} — Easy start for you`;
+    document.getElementById('obs-lbl-mid').textContent  = `$${lo}–$${hi} — Manageable with planning`;
+    document.getElementById('obs-lbl-high').textContent = `Over $${hi} — Stretches your budget`;
+  } else {
+    hint.textContent='';
+    document.getElementById('obs-lbl-low').textContent  = 'Under $10 — Easy start';
+    document.getElementById('obs-lbl-mid').textContent  = '$10–$30 — Manageable with planning';
+    document.getElementById('obs-lbl-high').textContent = '$30+ — Will need help';
+  }
+}
+
+function showObstacles() {
+  const prod=S.idea||'your product';
+  const flags=[];
+  if (!S.startCost) flags.push({l:'y',i:'💰',t:'Startup cost: not answered',b:'Make sure you know how much you need to spend before committing.'});
+  else if (S.startCost==='low') flags.push({l:'g',i:'✅',t:'Low startup cost — great!',b:"You can get started without much money. Very low risk!"});
+  else if (S.startCost==='mid') flags.push({l:'y',i:'⚠️',t:'Medium startup cost — plan ahead',b:`Buy supplies for a small first batch of ${prod} to limit risk. Reinvest your profits to grow!`});
+  else flags.push({l:'r',i:'🚨',t:'High startup cost — solve this first',b:`Start with a smaller version of ${prod}, or ask a parent for a business loan you pay back from your first sales.`});
+
+  if (!S.timePer) flags.push({l:'y',i:'⏱️',t:'Time per item: not answered',b:'Know how long it takes before you commit to a quantity.'});
+  else if (S.timePer==='quick') flags.push({l:'g',i:'⚡',t:'Fast to make — great!',b:'You can build up supply quickly. Consider making a larger batch before the event.'});
+  else if (S.timePer==='med') flags.push({l:'y',i:'⏳',t:'Medium time — start early',b:'Plan your schedule. If you need 20 items, that might mean making 2 per day. Start now!'});
+  else flags.push({l:'r',i:'🕐',t:'Time-intensive — limit your quantity',b:`Each ${prod} takes over an hour. Make fewer items but charge more — scarcity actually helps your price.`});
+
+  if (!S.supplies) flags.push({l:'y',i:'🏪',t:'Supply access: not answered',b:'Confirm you can get everything you need before the event.'});
+  else if (S.supplies==='easy') flags.push({l:'g',i:'✅',t:'Supplies easy to get — great!',b:'No supply chain worries. Go ahead and plan your production schedule.'});
+  else if (S.supplies==='some') flags.push({l:'y',i:'⚠️',t:'Supplies need planning',b:"Order early — don't wait until the last minute! Confirm delivery before the event date."});
+  else flags.push({l:'r',i:'🚨',t:'Supply access is a challenge',b:`Hard-to-find supplies are a real risk. Look for alternatives at craft or dollar stores.`});
+
+  const box=document.getElementById('obs-results');
+  box.style.display='flex';
+  box.innerHTML=flags.map(f=>`<div class="flag ${f.l}"><div class="fi">${f.i}</div><div><div class="ft">${f.t}</div><div class="fb">${f.b}</div></div></div>`).join('');
+  const btn=document.getElementById('obs-btn');
+  btn.textContent='Continue to Phase 2 →';
+  btn.onclick=()=>go('h');
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ══════════════════════════════════════════════════════════════════
+// BUDGET BUILDER
+// ══════════════════════════════════════════════════════════════════
+let rc=0;
+function addRow(name='',cost='') {
+  rc++;
+  const id='br'+rc;
+  const wrap=document.getElementById('budgetRows');
+  const row=document.createElement('div');
+  row.className='b-row'; row.id=id;
+  row.innerHTML=`<input type="text" class="inp" placeholder="e.g. Ribbon, Cups" value="${name}" oninput="updBudget()" style="flex:2;font-size:.88em;padding:9px 10px" /><div class="pfix" style="flex:1"><span class="pfix-sym">$</span><input type="number" class="inp cost-inp" placeholder="0.00" value="${cost}" min="0" step="0.01" oninput="updBudget()" style="font-size:.88em;padding:9px 10px 9px 20px" /></div><button class="del-btn" onclick="delRow('${id}')">×</button>`;
+  wrap.appendChild(row);
+  updBudget();
+}
+function delRow(id){const el=document.getElementById(id);if(el)el.remove();updBudget();}
+function getMatCost(){let t=0;document.querySelectorAll('#budgetRows .cost-inp').forEach(i=>{const v=parseFloat(i.value);if(!isNaN(v))t+=v;});return t;}
+function getTimeCost(){const m=parseFloat(document.getElementById('timeMins')?.value)||0;const r=parseFloat(document.getElementById('hrRate')?.value)||0;return(m/60)*r;}
+function updBudget(){
+  S.matCost=getMatCost();S.timeCost=getTimeCost();S.totalCost=S.matCost+S.timeCost;
+  const el=document.getElementById('bTotal');const bd=document.getElementById('cost-breakdown');
+  if(el)el.textContent='$'+S.totalCost.toFixed(2);
+  if(bd)bd.textContent='Materials: $'+S.matCost.toFixed(2)+' + Time: $'+S.timeCost.toFixed(2);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// COST SPLITTER
+// ══════════════════════════════════════════════════════════════════
+function toggleSplitter(){
+  const el=document.getElementById('splitter-inner');
+  el.style.display=el.style.display==='none'?'flex':'none';
+}
+function updSplitter(){
+  const total=parseFloat(document.getElementById('sp-total').value)||0;
+  const makes=parseInt(document.getElementById('sp-items').value)||0;
+  const used =parseInt(document.getElementById('sp-used').value)||0;
+  const res  =document.getElementById('splitter-result');
+  if(total>0&&makes>0&&used>0){
+    const perUnit=(total/makes)*used;
+    res.textContent=`Cost per item: $${perUnit.toFixed(3)} (each item uses ${used} out of ${makes} units)`;
+  } else {
+    res.textContent='Fill in all numbers above to see the cost per item';
+  }
+}
+function addSplitterToRow(){
+  const name=document.getElementById('sp-name').value||'Supply';
+  const total=parseFloat(document.getElementById('sp-total').value)||0;
+  const makes=parseInt(document.getElementById('sp-items').value)||0;
+  const used =parseInt(document.getElementById('sp-used').value)||0;
+  if(total>0&&makes>0&&used>0){
+    const perUnit=(total/makes)*used;
+    addRow(name,perUnit.toFixed(2));
+    // Clear splitter
+    ['sp-name','sp-total','sp-items','sp-used'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('splitter-result').textContent='Fill in the numbers above to see the cost per item';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PRICING
+// ══════════════════════════════════════════════════════════════════
+function prepPricing(){
+  updBudget();
+  const c=S.totalCost||0;
+  const prod=S.idea||'your item';
+  document.getElementById('price-prod').textContent=prod;
+  document.getElementById('disp-mat').textContent='$'+S.matCost.toFixed(2);
+  document.getElementById('disp-time').textContent='$'+S.timeCost.toFixed(2);
+  document.getElementById('disp-total').textContent='$'+c.toFixed(2);
+  const opts=[
+    {lbl:'Break-even',val:c,      cls:'b-orange',sub:'$0 profit'},
+    {lbl:'30% profit',val:c/0.70, cls:'b-green', sub:'Solid margin'},
+    {lbl:'50% profit',val:c/0.50, cls:'b-green', sub:'Aim for this! 🎯'}
+  ];
+  document.getElementById('suggRow').innerHTML=opts.map(o=>`<div class="bubble ${o.cls}" style="cursor:pointer;transition:transform .15s;flex:1" onclick="setPrice(${o.val.toFixed(2)})" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform=''"><div class="bv">$${o.val.toFixed(2)}</div><div class="bl">${o.lbl}</div><div style="font-size:.7em;color:#94a3b8;margin-top:2px">${o.sub}</div></div>`).join('');
+  if(S.myPrice>0) updPriceCheck();
+}
+function setPrice(v){document.getElementById('myPrice').value=v.toFixed(2);updPriceCheck();}
+
+function updPriceCheck(){
+  const price=parseFloat(document.getElementById('myPrice').value)||0;
+  S.myPrice=price;
+  const cost=S.totalCost||0;
+  const affordMax=(AFFORD[S.afford]||AFFORD['5-15']).max;
+  const area=document.getElementById('priceCheckArea');
+  if(price<=0){area.style.display='none';updCharity();return;}
+  area.style.display='block';
+
+  // Adjust break-even upward if charity is on (need extra profit to cover donation)
+  const effectiveCost = S.donateOn ? cost/(1-S.donatePct/100) : cost;
+  const be=cost,sweet0=effectiveCost*1.15,sweet1=affordMax*0.85,tooHigh=affordMax*1.15;
+  let pct,desc,col;
+  if(price<be){pct=Math.max(2,(price/Math.max(be,.01))*22);desc=`🚨 Below your cost — you'd lose $${(be-price).toFixed(2)} per sale. Raise it!`;col='#ef4444';}
+  else if(price<sweet0){pct=22+((price-be)/Math.max(sweet0-be,.01))*18;desc=`⚠️ Only ${Math.round(((price-cost)/price)*100)}% margin. Push higher!`;col='#d97706';}
+  else if(price<=sweet1){pct=40+((price-sweet0)/Math.max(sweet1-sweet0,.01))*35;desc=`✅ Sweet spot! $${(price-cost).toFixed(2)} profit — and customers can afford it.`;col='#16a34a';}
+  else if(price<=tooHigh){pct=75+((price-sweet1)/Math.max(tooHigh-sweet1,.01))*15;desc=`💡 Good profit, but pushing what customers usually pay ($${affordMax}). Test it first!`;col='#1F23B9';}
+  else{pct=92;desc=`⚠️ Above what customers usually spend. Try $${sweet1.toFixed(2)} for a better price.`;col='#E55937';}
+  pct=Math.min(Math.max(pct,2),96);
+  document.getElementById('pMarker').style.left=pct+'%';
+  const d=document.getElementById('pDesc');d.textContent=desc;d.style.color=col;
+  updCharity();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// CHARITY DONATION
+// ══════════════════════════════════════════════════════════════════
+function updCharity(){
+  const on=document.getElementById('charityToggle').checked;
+  S.donateOn=on;
+  document.getElementById('charity-inner').style.display=on?'block':'none';
+  if(!on){document.getElementById('charity-result').style.display='none';return;}
+  // Get active pct
+  const customPct=parseInt(document.getElementById('customPct').value)||0;
+  if(customPct>0) S.donatePct=Math.min(customPct,99);
+  const price=S.myPrice||0;
+  const cost =S.totalCost||0;
+  if(price>cost){
+    const profit=price-cost;
+    const donate=profit*(S.donatePct/100);
+    const keep  =profit-donate;
+    const res=document.getElementById('charity-result');
+    res.style.display='block';
+    res.innerHTML=`At $${price.toFixed(2)}: Profit $${profit.toFixed(2)}/item → 🎗️ Donate <strong>$${donate.toFixed(2)}</strong> → You keep <strong>$${keep.toFixed(2)}</strong>`;
+  } else {
+    document.getElementById('charity-result').style.display='none';
+  }
+}
+function setPct(btn){
+  document.querySelectorAll('.pct-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  S.donatePct=parseInt(btn.dataset.pct);
+  document.getElementById('customPct').value='';
+  updCharity();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SALES GOAL
+// ══════════════════════════════════════════════════════════════════
+function updGoal(){
+  const goal  =parseFloat(document.getElementById('earnGoal').value)||0;
+  const supply=parseInt(document.getElementById('supplyN').value)||0;
+  const price =S.myPrice||0;
+  const cost  =S.totalCost||0;
+  const profit=price-cost;
+  const netProfit=S.donateOn?profit*(1-S.donatePct/100):profit;
+  S.earnGoal=goal;S.supplyN=supply;
+
+  const resBox=document.getElementById('goalResult');
+  const supBox=document.getElementById('supplyCheck');
+  const chaBox=document.getElementById('charityGoalBox');
+
+  if(goal>0&&netProfit>0){
+    const needed=Math.ceil(goal/netProfit);
+    const maxEarn=(netProfit*supply).toFixed(2);
+    resBox.style.display='block';
+    document.getElementById('goalBubbles').innerHTML=`
+      <div class="bubble b-purple" style="flex:1"><div class="bv">${needed}</div><div class="bl">items to sell</div></div>
+      <div class="bubble b-green"  style="flex:1"><div class="bv">$${netProfit.toFixed(2)}</div><div class="bl">you keep/item</div></div>
+      ${supply>0?`<div class="bubble b-blue" style="flex:1"><div class="bv">$${maxEarn}</div><div class="bl">max if sold out</div></div>`:''}`;
+    let msg='';
+    if(supply>0){
+      if(supply>=needed) msg=`✅ You're planning to make ${supply} items — more than the ${needed} needed to hit your $${goal} goal. Great buffer!`;
+      else msg=`⚠️ You need ${needed} items but only plan to make ${supply}. Make ${needed-supply} more, or lower your goal to $${(netProfit*supply).toFixed(0)}.`;
+    } else {
+      msg=`To earn $${goal}, sell ${needed} items at $${price.toFixed(2)} each.`;
+    }
+    document.getElementById('goalMsg').textContent=msg;
+
+    // Charity breakdown box
+    if(S.donateOn&&profit>0){
+      chaBox.style.display='block';
+      const totalItems=supply>0?supply:needed;
+      const donateTotal=(profit*(S.donatePct/100)*totalItems).toFixed(2);
+      const keepTotal  =(netProfit*totalItems).toFixed(2);
+      document.getElementById('charityGoalRows').innerHTML=`
+        <div style="display:flex;justify-content:space-between"><span>Donation % per item</span><span>${S.donatePct}%</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Donate per item</span><span>$${(profit*(S.donatePct/100)).toFixed(2)}</span></div>
+        <div style="display:flex;justify-content:space-between"><span>If you sell ${totalItems} items — total donated</span><span>$${donateTotal} 🎗️</span></div>
+        <div style="display:flex;justify-content:space-between"><span>You keep</span><span>$${keepTotal}</span></div>`;
+    } else {
+      chaBox.style.display='none';
+    }
+
+    if(supply>0){
+      supBox.style.display='block';
+      supBox.className='flag '+(supply>=needed?'g':'y');
+      supBox.innerHTML=supply>=needed
+        ?`<div class="fi">✅</div><div><div class="ft">Supply &amp; goal aligned!</div><div class="fb">You have enough items planned to hit your earning goal.</div></div>`
+        :`<div class="fi">⚠️</div><div><div class="ft">Not enough items</div><div class="fb">You'd need ${needed-supply} more items. Can you make more before the event?</div></div>`;
+    }
+  } else if(goal>0&&netProfit<=0){
+    resBox.style.display='block';
+    document.getElementById('goalBubbles').innerHTML='';
+    document.getElementById('goalMsg').textContent='⚠️ Your price needs to be higher than your cost before you can set a goal. Go back and adjust your price!';
+    chaBox.style.display='none';supBox.style.display='none';
+  } else {
+    resBox.style.display='none';chaBox.style.display='none';supBox.style.display='none';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FINAL SNAPSHOT
+// ══════════════════════════════════════════════════════════════════
+function buildSnapshot(){
+  const prod  =S.idea||'Not set';
+  const cost  =S.totalCost||0;
+  const price =S.myPrice||0;
+  const profit=price-cost;
+  const netP  =S.donateOn?profit*(1-S.donatePct/100):profit;
+  const supply=S.supplyN||0;
+  const goal  =S.earnGoal||0;
+
+  // Find icon
+  let icon='🎪';
+  for(const k of Object.keys(IDEAMAP)){
+    const hit=IDEAMAP[k].find(x=>x.n===prod);
+    if(hit){icon=hit.i;break;}
+  }
+  document.getElementById('snap-icon').textContent=icon;
+  document.getElementById('snap-name').textContent=prod;
+
+  // Product section
+  const costLabels={low:'Low ✅',mid:'Medium ⚠️',high:'High 🚨'};
+  const timeLabels={quick:'Under 15 min ⚡',med:'15 min–1 hour ⏳',long:'Over 1 hour 🕐'};
+  const supLabels={easy:'Easy to get ✅',some:'Need to plan ⚠️',hard:'Challenging 🚨'};
+  document.getElementById('sn-prod').textContent=prod;
+  document.getElementById('sn-cost').textContent=costLabels[S.startCost]||'—';
+  document.getElementById('sn-time').textContent=timeLabels[S.timePer]||'—';
+  document.getElementById('sn-supp').textContent=supLabels[S.supplies]||'—';
+
+  // Customer section
+  const custLabels={kids:'Kids & friends',adults:'Parents & adults',families:'Families at events',neighbors:'Community neighbors'};
+  const proxLabels={yes:'Very close by ✅',some:'Somewhat close ⚠️',far:'Hard to reach 🚨'};
+  const affordLabels={u5:'Under $5','5-15':'$5\u201315','15-30':'$15\u201330','30p':'$30+'};
+  document.getElementById('sn-cust').textContent=custLabels[S.custType]||'—';
+  document.getElementById('sn-prox').textContent=proxLabels[S.proximity]||'—';
+  document.getElementById('sn-afford').textContent={u5:'Under $5','5-15':'$5–$15','15-30':'$15–$30','30p':'$30+'}[S.afford]||'—';
+
+  // Price section
+  document.getElementById('sn-item-cost').textContent=cost>0?'$'+cost.toFixed(2):'—';
+  document.getElementById('sn-price').textContent=price>0?'$'+price.toFixed(2):'—';
+  document.getElementById('sn-profit').textContent=profit>0?'$'+profit.toFixed(2)+'/item':'—';
+  document.getElementById('sn-supply').textContent=supply>0?supply+' items':'—';
+  document.getElementById('sn-earn').textContent=goal>0?'$'+goal:'—';
+
+  // Charity rows
+  if(S.donateOn&&profit>0){
+    const donate=profit*(S.donatePct/100);
+    document.getElementById('sn-charity-row').style.display='flex';
+    document.getElementById('sn-keep-row').style.display='flex';
+    document.getElementById('sn-charity').textContent='$'+donate.toFixed(2)+'/item ('+S.donatePct+'%) 🎗️';
+    document.getElementById('sn-keep').textContent='$'+netP.toFixed(2)+'/item';
+  } else {
+    document.getElementById('sn-charity-row').style.display='none';
+    document.getElementById('sn-keep-row').style.display='none';
+  }
+
+  // Next steps
+  const steps=[];
+  if(!S.idea) steps.push({t:'Choose your product',d:'Go back to the Product section and pick what you\'ll sell.'});
+  else {
+    if(cost===0) steps.push({t:'Calculate your exact costs 🧮',d:`Go to Price & Budget and add all your material costs for ${prod} so you know your real break-even price.`});
+    else steps.push({t:`Make ${supply||'???'} items before the event 📦`,d:`Each ${prod} earns you $${netP.toFixed(2)} ${S.donateOn?'(after your '+S.donatePct+'% donation)':''} in profit. Start making them now!`});
+    if(!S.custType) steps.push({t:'Figure out your customer',d:'Go to the Customers section — knowing who buys from you is just as important as your product!'});
+    else steps.push({t:`Reach your ${custLabels[S.custType]||'customers'} 📣`,d:`Use ${S.reach.length>0?S.reach.join(', '):'word of mouth, flyers, and social media'} to spread the word before your event.`});
+  }
+  steps.push({t:'Set up your display 🎪',d:`A great table has a price sign, colorful cover, and a sample to show off. Make your ${prod||'product'} impossible to walk past!`});
+
+  document.getElementById('nextSteps').innerHTML=steps.slice(0,3).map((s,i)=>`
+    <div class="nxt-step"><div class="nxt-n">${i+1}</div>
+    <div><div class="nxt-t">${s.t}</div><div class="nxt-d">${s.d}</div></div></div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RESET
+// ══════════════════════════════════════════════════════════════════
+function resetAll(){
+  Object.assign(S,{passions:[],skills:[],needs:[],idea:'',estItems:0,estCostPer:0,myBudget:0,startCost:'',timePer:'',supplies:'',custType:'',proximity:'',reach:[],afford:'',matCost:0,timeCost:0,totalCost:0,myPrice:0,earnGoal:0,supplyN:0,donateOn:false,donatePct:10});
+  document.querySelectorAll('.tbtn.on,.ropt.on').forEach(el=>el.classList.remove('on'));
+  ['customIdea','timeMins','hrRate','myPrice','earnGoal','supplyN','estItems','estCostPer','myBudget'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('budgetRows').innerHTML='';
+  document.getElementById('charityToggle').checked=false;
+  document.getElementById('charity-inner').style.display='none';
+  document.getElementById('obs-results').style.display='none';
+  rc=0;
+  go(0);
+}
+</script>
+</body>
+</html>

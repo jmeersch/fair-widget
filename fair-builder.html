@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fair Builder — Kids Business Fair 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ── Brand: teal #37C9C1 · blue #1F23B9 · orange #E55937 ── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito','Segoe UI',sans-serif; min-height:100vh; transition: background 0.5s ease; }
+    body.ph0 { background: linear-gradient(145deg,#1F23B9 0%,#37C9C1 100%); }
+    body.ph1 { background: linear-gradient(145deg,#0d9e97 0%,#37C9C1 60%,#5dd8d2 100%); }
+    body.ph2 { background: linear-gradient(145deg,#1a1e9a 0%,#1F23B9 60%,#3a3fd4 100%); }
+    body.ph3 { background: linear-gradient(145deg,#c43d1e 0%,#E55937 60%,#f07350 100%); }
+    body.phF { background: linear-gradient(145deg,#1F23B9 0%,#37C9C1 50%,#E55937 100%); }
+
+    /* Progress */
+    .progress-bar { position:fixed; top:0; left:0; width:100%; height:5px; background:rgba(255,255,255,0.15); z-index:999; }
+    .progress-fill { height:100%; background:white; border-radius:3px; transition:width 0.45s ease; }
+
+    /* Layout */
+    .wrap { max-width:660px; margin:0 auto; padding:52px 16px 56px; min-height:100vh; }
+    .screen { display:none; }
+    .screen.active { display:block; }
+
+    /* Screen header */
+    .phase-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.18); backdrop-filter:blur(6px); color:white; padding:5px 14px; border-radius:20px; font-size:0.8em; font-weight:700; margin-bottom:13px; }
+    .sh { color:white; margin-bottom:20px; }
+    .sh-title { font-size:1.85em; font-weight:900; line-height:1.2; text-shadow:0 2px 10px rgba(0,0,0,0.2); }
+    .sh-sub { font-size:0.97em; opacity:0.85; margin-top:6px; line-height:1.55; }
+
+    /* Card */
+    .card { background:white; border-radius:22px; padding:26px 24px; box-shadow:0 12px 48px rgba(0,0,0,0.18); display:flex; flex-direction:column; gap:20px; }
+
+    /* Labels / helpers */
+    .slabel { font-weight:800; color:#1e293b; font-size:0.93em; margin-bottom:9px; display:flex; align-items:center; gap:6px; }
+    .hint   { font-size:0.8em; color:#64748b; font-style:italic; line-height:1.45; margin-bottom:7px; }
+    .divider{ height:1px; background:#f1f5f9; }
+
+    /* Toggle chips (multi-select) */
+    .tgrid { display:flex; flex-wrap:wrap; gap:7px; }
+    .tbtn { background:#f8fafc; border:2px solid #e2e8f0; border-radius:10px; padding:8px 13px; font-size:0.88em; font-weight:600; color:#475569; cursor:pointer; transition:all 0.15s; user-select:none; }
+    .tbtn:hover { background:#f1f5f9; border-color:#cbd5e1; }
+    .tbtn.on { background:#37C9C1; border-color:#37C9C1; color:white; }
+
+    /* Inline radio (3-across) */
+    .inline-radio { display:flex; gap:8px; }
+    .inline-ropt { flex:1; border:2px solid #e2e8f0; border-radius:12px; padding:10px 8px; cursor:pointer; transition:all 0.15s; text-align:center; font-size:0.85em; font-weight:700; color:#475569; background:#f8fafc; line-height:1.4; }
+    .inline-ropt:hover { background:#f1f5f9; border-color:#cbd5e1; }
+    .inline-ropt.on { border-color:#1F23B9; background:#eef0ff; color:#1F23B9; }
+    .inline-ropt .sub { font-weight:600; font-size:0.82em; color:#94a3b8; display:block; margin-top:3px; }
+    .inline-ropt.on .sub { color:#6366f1; }
+
+    /* Idea items (filter screen) */
+    .idea-item { border:2px solid #e2e8f0; border-radius:14px; padding:14px 15px; transition:all 0.35s ease; background:white; display:flex; flex-direction:column; gap:10px; position:relative; }
+    .idea-top { display:flex; align-items:flex-start; gap:11px; }
+    .idea-icon { font-size:1.4em; flex-shrink:0; }
+    .idea-name { font-weight:700; color:#1e293b; font-size:0.93em; transition: all 0.3s; }
+    .idea-why  { font-size:0.79em; color:#64748b; margin-top:2px; }
+    .idea-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+    .tag { font-size:0.7em; font-weight:700; padding:3px 8px; border-radius:6px; }
+    .tag-low   { background:#dcfce7; color:#15803d; }
+    .tag-mid   { background:#fef9c3; color:#a16207; }
+    .tag-high  { background:#fee2e2; color:#b91c1c; }
+    .tag-quick { background:#e0f2fe; color:#0369a1; }
+    .tag-med   { background:#fef9c3; color:#a16207; }
+    .tag-long  { background:#ffe4e6; color:#be123c; }
+
+    /* Crossed-out state */
+    .idea-item.crossed { opacity:0.32; background:#f8fafc; }
+    .idea-item.crossed .idea-name { text-decoration:line-through; color:#94a3b8; }
+    .idea-item.crossed .idea-why  { text-decoration:line-through; }
+    .crossed-label { display:none; font-size:0.72em; font-weight:800; color:#94a3b8; letter-spacing:0.05em; text-transform:uppercase; padding:2px 8px; background:#e2e8f0; border-radius:6px; white-space:nowrap; }
+    .idea-item.crossed .crossed-label { display:inline; }
+
+    /* Vote buttons */
+    .vote-section { display:flex; flex-direction:column; gap:5px; }
+    .vote-q { font-size:0.78em; font-weight:700; color:#64748b; }
+    .vote-row { display:flex; gap:7px; }
+    .vote-btn { flex:1; border:2px solid #e2e8f0; border-radius:10px; padding:7px 6px; font-size:0.82em; font-weight:700; cursor:pointer; transition:all 0.15s; color:#475569; background:#f8fafc; text-align:center; font-family:inherit; }
+    .vote-btn:hover { border-color:#cbd5e1; background:#f1f5f9; }
+    .vote-btn.yes-on   { border-color:#37C9C1; background:#e8fafa; color:#0d9e97; }
+    .vote-btn.maybe-on { border-color:#d97706; background:#fef9c3; color:#a16207; }
+    .vote-btn.no-on    { border-color:#ef4444; background:#fee2e2; color:#b91c1c; }
+
+    /* Pick cards */
+    .pick-card { border:2px solid #e2e8f0; border-radius:14px; padding:14px 15px; cursor:pointer; transition:all 0.15s; display:flex; align-items:flex-start; gap:11px; }
+    .pick-card:hover { border-color:#37C9C1; background:#f0fdfc; }
+    .pick-card.on { border-color:#37C9C1; background:#e8fafa; box-shadow:0 0 0 3px rgba(55,201,193,0.15); }
+    .pick-card .idea-name { font-weight:700; color:#1e293b; font-size:0.93em; }
+    .pick-card .idea-why  { font-size:0.79em; color:#64748b; margin-top:2px; }
+
+    /* Mode toggle */
+    .mode-toggle { display:flex; background:#f1f5f9; border-radius:12px; padding:4px; }
+    .mode-btn { flex:1; padding:9px; border:none; background:none; border-radius:9px; font-family:inherit; font-weight:700; font-size:0.88em; cursor:pointer; transition:all 0.2s; color:#64748b; }
+    .mode-btn.on { background:white; box-shadow:0 2px 8px rgba(0,0,0,0.12); color:#1e293b; }
+
+    /* Batch info box */
+    .batch-info { background:#fffbeb; border:2px solid #fcd34d; border-radius:12px; padding:14px; display:none; }
+
+    /* Inputs */
+    .inp { width:100%; border:2px solid #e2e8f0; border-radius:10px; padding:9px 12px; font-family:inherit; font-size:0.93em; font-weight:600; outline:none; transition:border-color 0.15s; color:#1e293b; }
+    .inp:focus { border-color:#37C9C1; }
+    .pfix { position:relative; }
+    .pfix-sym { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:#94a3b8; font-weight:700; }
+    .pfix .inp { padding-left:22px; }
+
+    /* Budget rows */
+    .b-row { display:flex; gap:8px; align-items:center; }
+    .del-btn { width:30px; height:30px; border:none; background:#fee2e2; color:#b91c1c; border-radius:8px; cursor:pointer; font-size:1.1em; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:inherit; }
+
+    /* Cost total */
+    .cost-total { background:#f0fdf4; border-radius:12px; padding:14px; display:flex; justify-content:space-between; align-items:center; }
+    .cost-lbl { font-weight:700; color:#1e293b; }
+    .cost-val { font-size:1.5em; font-weight:900; color:#37C9C1; }
+
+    /* Bubbles */
+    .bubble-row { display:flex; gap:10px; flex-wrap:wrap; }
+    .bubble { flex:1; min-width:80px; border-radius:14px; padding:14px 10px; text-align:center; }
+    .bubble .bv { font-size:1.3em; font-weight:900; }
+    .bubble .bl { font-size:0.75em; font-weight:700; margin-top:3px; opacity:0.75; }
+    .b-orange { background:#fff7ed; color:#c2410c; }
+    .b-green  { background:#f0fdf4; color:#15803d; }
+    .b-blue   { background:#eff6ff; color:#1d4ed8; }
+    .b-purple { background:#faf5ff; color:#7c3aed; }
+    .b-teal   { background:#e8fafa; color:#0d9e97; }
+
+    /* Price track */
+    .price-track { height:18px; border-radius:9px; position:relative; margin:16px 0 8px; background:linear-gradient(to right,#ef4444 0%,#f59e0b 25%,#22c55e 55%,#1F23B9 80%,#E55937 100%); }
+    .price-marker { position:absolute; top:-6px; width:4px; height:30px; background:#1e293b; border-radius:3px; transition:left 0.3s ease; box-shadow:0 0 0 3px rgba(255,255,255,0.8); }
+    .track-labels { display:flex; justify-content:space-between; font-size:0.68em; color:#94a3b8; font-weight:700; }
+
+    /* Affordability radio */
+    .afford-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .ropt { border:2px solid #e2e8f0; border-radius:12px; padding:10px 13px; cursor:pointer; transition:all 0.15s; }
+    .ropt:hover { background:#f8fafc; border-color:#cbd5e1; }
+    .ropt.on { border-color:#37C9C1; background:#e8fafa; }
+    .rl { font-weight:700; color:#1e293b; font-size:0.9em; }
+    .rd { font-size:0.78em; color:#64748b; margin-top:2px; }
+
+    /* Flags */
+    .flag { display:flex; align-items:flex-start; gap:12px; padding:14px; border-radius:12px; border:2px solid; }
+    .flag.g { background:#f0fdf4; border-color:#86efac; }
+    .flag.y { background:#fffbeb; border-color:#fcd34d; }
+    .flag.r { background:#fef2f2; border-color:#fca5a5; }
+    .fi { font-size:1.3em; flex-shrink:0; }
+    .ft { font-weight:700; color:#1e293b; font-size:0.93em; }
+    .fb { font-size:0.8em; color:#64748b; margin-top:3px; line-height:1.4; }
+
+    /* Winner badge */
+    .winner-badge { background:#e8fafa; border:2px solid #37C9C1; border-radius:14px; padding:16px; text-align:center; display:none; }
+
+    /* Buttons */
+    .btn-row { display:flex; gap:12px; margin-top:22px; }
+    .btn { border:none; border-radius:12px; padding:13px 22px; font-family:inherit; font-weight:800; font-size:0.95em; cursor:pointer; transition:all 0.18s; }
+    .btn-p { background:#1F23B9; color:white; flex:1; }
+    .btn-p:hover { background:#181cb0; transform:translateY(-1px); }
+    .btn-t { background:#37C9C1; color:white; flex:1; }
+    .btn-t:hover { background:#2db5ad; transform:translateY(-1px); }
+    .btn-s { background:rgba(255,255,255,0.2); color:white; border:2px solid rgba(255,255,255,0.3); }
+    .btn-s:hover { background:rgba(255,255,255,0.3); }
+    .btn-sm { background:#f8fafc; border:2px solid #e2e8f0; color:#475569; padding:9px 16px; border-radius:10px; font-family:inherit; font-size:0.85em; font-weight:700; cursor:pointer; }
+    .btn-sm:hover { border-color:#cbd5e1; background:#f1f5f9; }
+
+    /* Count badge */
+    .count-badge { display:inline-flex; align-items:center; gap:5px; background:#37C9C1; color:white; padding:4px 12px; border-radius:20px; font-size:0.82em; font-weight:800; }
+    .count-badge.zero { background:#94a3b8; }
+
+    /* Summary */
+    .snap-sec { border-radius:14px; padding:18px; }
+    .snap-h   { font-weight:900; font-size:1em; margin-bottom:12px; }
+    .snap-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
+    .snap-row:last-child { border-bottom:none; }
+    .sk { font-size:0.82em; color:#64748b; font-weight:600; }
+    .sv { font-size:0.82em; color:#1e293b; font-weight:700; text-align:right; max-width:55%; }
+    .nxt-box  { background:#f8fafc; border-radius:14px; padding:18px; }
+    .nxt-h    { font-weight:900; color:#1e293b; margin-bottom:12px; }
+    .nxt-step { display:flex; gap:11px; align-items:flex-start; padding:10px 0; border-bottom:1px solid #f1f5f9; }
+    .nxt-step:last-child { border-bottom:none; }
+    .nxt-n { font-size:1.4em; font-weight:900; color:#37C9C1; flex-shrink:0; line-height:1; margin-top:2px; }
+    .nxt-t { font-weight:700; color:#1e293b; font-size:0.9em; }
+    .nxt-d { font-size:0.79em; color:#64748b; margin-top:2px; line-height:1.4; }
+
+    /* Empty state */
+    .empty-state { text-align:center; padding:30px 20px; color:#94a3b8; font-size:0.9em; font-weight:600; line-height:1.6; }
+
+    /* Step intro blocks (welcome screen) */
+    .step-block { display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:12px; }
+    .step-em { font-size:1.4em; }
+    .step-title { font-weight:800; color:#1e293b; font-size:0.93em; }
+    .step-desc  { font-size:0.8em; color:#64748b; margin-top:2px; }
+  </style>
+</head>
+<body class="ph0">
+<div class="progress-bar"><div class="progress-fill" id="pBar" style="width:0%"></div></div>
+
+<div class="wrap">
+
+<!-- ══════════ SCREEN 1 — WELCOME ══════════ -->
+<div class="screen active" id="s1">
+  <div class="sh">
+    <div class="phase-pill">🎪 Kids Business Fair 2026</div>
+    <div class="sh-title">Welcome, Fair Builder! 🚀</div>
+    <div class="sh-sub">Let's plan your perfect fair business — step by step.</div>
+  </div>
+  <div class="card">
+    <div style="text-align:center; padding:6px 0">
+      <div style="font-size:3em; margin-bottom:10px">🎪</div>
+      <div style="font-weight:900; color:#1e293b; font-size:1.1em">4 steps to fair-day success</div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div class="step-block" style="background:#e8fafa">
+        <div class="step-em">🧠</div>
+        <div><div class="step-title">Step 1 — Find Your Ideas</div><div class="step-desc">Based on what you love, what you're good at, and what fair visitors want</div></div>
+      </div>
+      <div class="step-block" style="background:#eef0ff">
+        <div class="step-em">✂️</div>
+        <div><div class="step-title">Step 2 — Cross Out & Pick a Winner</div><div class="step-desc">Filter ideas by time, money, and what fair customers actually buy</div></div>
+      </div>
+      <div class="step-block" style="background:#fff7ed">
+        <div class="step-em">💰</div>
+        <div><div class="step-title">Step 3 — Build Your Budget</div><div class="step-desc">Add up every cost so you know exactly what you're spending per item</div></div>
+      </div>
+      <div class="step-block" style="background:#f0fdf4">
+        <div class="step-em">🏷️</div>
+        <div><div class="step-title">Step 4 — Set Your Price & Goal</div><div class="step-desc">Choose a price that earns real profit and decide how much you want to make</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="slabel">What's your name?</div>
+      <input type="text" class="inp" id="kidName" placeholder="Type your first name..." oninput="S.name=this.value" />
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-t" onclick="go(2)">Let's Go! →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 2 — IDEA BUILDER ══════════ -->
+<div class="screen" id="s2">
+  <div class="sh">
+    <div class="phase-pill">🧠 Step 1 of 4 — Find Ideas</div>
+    <div class="sh-title">What are you into? 🌟</div>
+    <div class="sh-sub">Pick everything that fits you — the more you choose, the better your ideas will be!</div>
+  </div>
+  <div class="card">
+
+    <div>
+      <div class="slabel">❤️ What do you love?</div>
+      <div class="hint">Pick all your passions</div>
+      <div class="tgrid">
+        <div class="tbtn" data-g="passions" data-v="art"       onclick="tog(this)">🎨 Art &amp; Drawing</div>
+        <div class="tbtn" data-g="passions" data-v="cooking"   onclick="tog(this)">🍳 Cooking &amp; Baking</div>
+        <div class="tbtn" data-g="passions" data-v="crafting"  onclick="tog(this)">✂️ Crafts &amp; Making</div>
+        <div class="tbtn" data-g="passions" data-v="plants"    onclick="tog(this)">🌱 Plants &amp; Nature</div>
+        <div class="tbtn" data-g="passions" data-v="animals"   onclick="tog(this)">🐾 Animals &amp; Pets</div>
+        <div class="tbtn" data-g="passions" data-v="music"     onclick="tog(this)">🎵 Music &amp; Writing</div>
+        <div class="tbtn" data-g="passions" data-v="tech"      onclick="tog(this)">💻 Tech &amp; Design</div>
+        <div class="tbtn" data-g="passions" data-v="sports"    onclick="tog(this)">⚽ Sports &amp; Being Active</div>
+        <div class="tbtn" data-g="passions" data-v="organizing" onclick="tog(this)">📋 Organizing &amp; Planning</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="slabel">💪 What are you good at making, providing, or doing?</div>
+      <div class="hint">Pick your strongest skills</div>
+      <div class="tgrid">
+        <div class="tbtn" data-g="skills" data-v="handmade" onclick="tog(this)">🙌 Making things by hand</div>
+        <div class="tbtn" data-g="skills" data-v="baking"   onclick="tog(this)">🧁 Baking &amp; cooking food</div>
+        <div class="tbtn" data-g="skills" data-v="drawing"  onclick="tog(this)">✏️ Drawing &amp; designing</div>
+        <div class="tbtn" data-g="skills" data-v="growing"  onclick="tog(this)">🌿 Growing plants</div>
+        <div class="tbtn" data-g="skills" data-v="helping"  onclick="tog(this)">🤝 Helping &amp; taking care of things</div>
+        <div class="tbtn" data-g="skills" data-v="building" onclick="tog(this)">🔨 Building &amp; assembling</div>
+        <div class="tbtn" data-g="skills" data-v="digital"  onclick="tog(this)">🖥️ Digital design &amp; printing</div>
+        <div class="tbtn" data-g="skills" data-v="sewing"   onclick="tog(this)">🪡 Sewing &amp; stitching</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="slabel">👀 What do you notice fair visitors want?</div>
+      <div class="hint">What have you seen people buy at markets and fairs?</div>
+      <div class="tgrid">
+        <div class="tbtn" data-g="market" data-v="snacks"      onclick="tog(this)">🍿 They love snacks &amp; food</div>
+        <div class="tbtn" data-g="market" data-v="gifts"       onclick="tog(this)">🎁 They look for unique gifts</div>
+        <div class="tbtn" data-g="market" data-v="kids"        onclick="tog(this)">👧 Kids want fun stuff</div>
+        <div class="tbtn" data-g="market" data-v="custom"      onclick="tog(this)">✨ People love personalized things</div>
+        <div class="tbtn" data-g="market" data-v="cheap"       onclick="tog(this)">💵 People like things under $10</div>
+        <div class="tbtn" data-g="market" data-v="nature"      onclick="tog(this)">🌸 Plant &amp; nature lovers shop here</div>
+        <div class="tbtn" data-g="market" data-v="accessories" onclick="tog(this)">💍 Accessories &amp; wearables sell</div>
+        <div class="tbtn" data-g="market" data-v="activities"  onclick="tog(this)">🎲 Games &amp; activities are popular</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(1)">← Back</button>
+    <button class="btn btn-t" onclick="go(3)">Show Me My Ideas →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 3 — FILTER & CROSS OUT ══════════ -->
+<div class="screen" id="s3">
+  <div class="sh">
+    <div class="phase-pill">✂️ Step 2 of 4 — Filter Ideas</div>
+    <div class="sh-title">Let's cross some out! 🗡️</div>
+    <div class="sh-sub">Answer the questions — ideas that don't fit will get automatically crossed out!</div>
+  </div>
+  <div class="card">
+
+    <!-- Filter 1: Money priority -->
+    <div>
+      <div class="slabel">💰 Is making a lot of money your main goal at the fair?</div>
+      <div class="inline-radio">
+        <div class="inline-ropt" data-g="moneyPriority" data-v="yes"   onclick="radFilter(this)">💰 Yes!<span class="sub">Money matters</span></div>
+        <div class="inline-ropt" data-g="moneyPriority" data-v="kinda" onclick="radFilter(this)">🤷 Kinda<span class="sub">Nice to have</span></div>
+        <div class="inline-ropt" data-g="moneyPriority" data-v="no"    onclick="radFilter(this)">😊 Not really<span class="sub">Just for fun!</span></div>
+      </div>
+      <div id="moneyNote" style="display:none; margin-top:8px; font-size:0.8em; color:#b91c1c; font-weight:700; background:#fee2e2; padding:8px 12px; border-radius:8px;">
+        💡 High-cost ideas get crossed out — they eat up too much of your profit!
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Filter 2: Time available -->
+    <div>
+      <div class="slabel">⏰ How much time do you have to prepare before fair day?</div>
+      <div class="inline-radio">
+        <div class="inline-ropt" data-g="timeAvail" data-v="lot"    onclick="radFilter(this)">📅 A lot!<span class="sub">Weeks to prep</span></div>
+        <div class="inline-ropt" data-g="timeAvail" data-v="med"    onclick="radFilter(this)">📆 Some<span class="sub">A few days</span></div>
+        <div class="inline-ropt" data-g="timeAvail" data-v="little" onclick="radFilter(this)">⚡ Not much<span class="sub">Just a bit!</span></div>
+      </div>
+      <div id="timeNote" style="display:none; margin-top:8px; font-size:0.8em; color:#a16207; font-weight:700; background:#fef9c3; padding:8px 12px; border-radius:8px;"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Idea list with vote buttons -->
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
+        <div class="slabel" style="margin-bottom:0">🛍️ Your Ideas</div>
+        <div class="count-badge" id="ideaCount">— ideas</div>
+      </div>
+      <div class="hint">For each idea that's still standing — would fair visitors actually buy it?</div>
+      <div id="ideaFilterList" style="display:flex; flex-direction:column; gap:10px; margin-top:10px"></div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(2)">← Back</button>
+    <button class="btn btn-t" onclick="go(4)">Pick My Winner →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 4 — PICK YOUR WINNER ══════════ -->
+<div class="screen" id="s4">
+  <div class="sh">
+    <div class="phase-pill">🏆 Pick Your Winner</div>
+    <div class="sh-title">Which one is it? 🎯</div>
+    <div class="sh-sub">These ideas made it through the filter — pick the one you want to sell at the fair!</div>
+  </div>
+  <div class="card">
+    <div id="pickList" style="display:flex; flex-direction:column; gap:10px"></div>
+    <div class="divider"></div>
+    <div>
+      <div class="slabel">💡 Or write your own idea:</div>
+      <input type="text" class="inp" id="customIdea" placeholder="Type your own product idea..." oninput="pickCustom()" />
+    </div>
+    <div class="winner-badge" id="winnerBadge">
+      <div style="font-size:0.78em; color:#0d9e97; font-weight:800; letter-spacing:0.05em; text-transform:uppercase">You picked</div>
+      <div id="winnerName" style="font-size:1.35em; font-weight:900; color:#1e293b; margin-top:5px"></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(3)">← Back</button>
+    <button class="btn btn-t" onclick="go(5)">Build My Budget →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 5 — BUDGET BUILDER ══════════ -->
+<div class="screen" id="s5">
+  <div class="sh">
+    <div class="phase-pill">💰 Step 3 of 4 — Budget Builder</div>
+    <div class="sh-title">What does it cost? 🧮</div>
+    <div class="sh-sub">Figure out exactly what you'll spend making <span id="budget-prod">your product</span>.</div>
+  </div>
+  <div class="card">
+
+    <!-- Mode toggle -->
+    <div>
+      <div class="slabel">Are you calculating costs per item, or for a whole batch?</div>
+      <div class="mode-toggle">
+        <button class="mode-btn on" id="modeItemBtn" onclick="setBudgetMode('item')">📦 Per Item</button>
+        <button class="mode-btn"    id="modeBatchBtn" onclick="setBudgetMode('batch')">🗃️ Per Batch</button>
+      </div>
+    </div>
+
+    <!-- Batch config -->
+    <div class="batch-info" id="batchConfig">
+      <div class="slabel" style="color:#a16207; margin-bottom:8px">🗃️ Batch Details</div>
+      <div class="hint">How many items will you make in one batch?</div>
+      <input type="number" class="inp" id="batchItems" placeholder="e.g. 12" min="1" oninput="updBudget()" />
+      <div style="margin-top:8px; font-size:0.8em; color:#a16207; font-weight:600">💡 Enter your total batch costs below — we'll divide by the number of items automatically.</div>
+    </div>
+
+    <!-- Materials -->
+    <div>
+      <div class="slabel">🛒 What do you need to buy?</div>
+      <div class="hint" id="matHint">List every material and its cost per item</div>
+      <div id="budgetRows" style="display:flex; flex-direction:column; gap:8px"></div>
+      <button class="btn-sm" onclick="addRow()" style="margin-top:10px">+ Add an item</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Time cost -->
+    <div>
+      <div class="slabel">⏱️ Your time is worth something!</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <div style="flex:1; min-width:130px">
+          <div class="hint" id="timeLabel">Minutes to make one item</div>
+          <input type="number" class="inp" id="timeMins" placeholder="e.g. 30" min="0" oninput="updBudget()" />
+        </div>
+        <div style="flex:1; min-width:130px">
+          <div class="hint">Your hourly rate ($)</div>
+          <div class="pfix">
+            <span class="pfix-sym">$</span>
+            <input type="number" class="inp" id="hrRate" placeholder="10" min="0" step="0.50" value="10" oninput="updBudget()" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total -->
+    <div class="cost-total">
+      <div>
+        <div class="cost-lbl">Cost per item</div>
+        <div style="font-size:0.78em; color:#64748b; margin-top:2px" id="costBreakdown">Materials: $0.00 + Time: $0.00</div>
+      </div>
+      <div class="cost-val" id="bTotal">$0.00</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(4)">← Back</button>
+    <button class="btn btn-t" onclick="go(6)">Set My Price →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 6 — PRICE DECIDER ══════════ -->
+<div class="screen" id="s6">
+  <div class="sh">
+    <div class="phase-pill">🏷️ Step 4a — Price Decider</div>
+    <div class="sh-title">What's your price? 💵</div>
+    <div class="sh-sub">Find the price that earns you real money — not too low, not too high.</div>
+  </div>
+  <div class="card">
+
+    <!-- Cost recap -->
+    <div style="background:#f0fdf4; border-radius:12px; padding:14px">
+      <div class="slabel" style="color:#15803d; margin-bottom:8px">✅ Your cost for <span id="price-prod">your item</span></div>
+      <div class="bubble-row">
+        <div class="bubble b-teal" style="flex:1"><div class="bv" id="disp-mat">$0.00</div><div class="bl">Materials</div></div>
+        <div class="bubble b-teal" style="flex:1"><div class="bv" id="disp-time">$0.00</div><div class="bl">Your time</div></div>
+        <div class="bubble b-green" style="flex:1"><div class="bv" id="disp-total">$0.00</div><div class="bl">Total cost</div></div>
+      </div>
+    </div>
+
+    <!-- Suggested prices -->
+    <div>
+      <div class="slabel">💡 Suggested prices — click one to use it:</div>
+      <div class="bubble-row" id="suggRow"></div>
+    </div>
+
+    <!-- My price input -->
+    <div>
+      <div class="slabel">🏷️ My selling price:</div>
+      <div class="pfix">
+        <span class="pfix-sym">$</span>
+        <input type="number" class="inp" id="myPrice" placeholder="0.00" min="0" step="0.25" oninput="updPriceCheck()" />
+      </div>
+    </div>
+
+    <!-- Price track -->
+    <div id="priceCheckArea" style="display:none">
+      <div class="price-track"><div class="price-marker" id="pMarker" style="left:2%"></div></div>
+      <div class="track-labels">
+        <span>📉 Too low</span><span>Thin margin</span><span>Sweet spot ✅</span><span>Pushing it</span><span>Too high 📈</span>
+      </div>
+      <div id="pDesc" style="margin-top:10px; font-weight:700; font-size:0.9em; line-height:1.4"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Affordability -->
+    <div>
+      <div class="slabel">👛 What do fair visitors usually spend?</div>
+      <div class="afford-grid">
+        <div class="ropt" data-g="afford" data-v="u5"   onclick="radA(this)"><div class="rl">Under $5</div><div class="rd">Budget buyers</div></div>
+        <div class="ropt" data-g="afford" data-v="5-15" onclick="radA(this)"><div class="rl">$5 – $15</div><div class="rd">Most fair visitors</div></div>
+        <div class="ropt" data-g="afford" data-v="15-30" onclick="radA(this)"><div class="rl">$15 – $30</div><div class="rd">Willing to splurge</div></div>
+        <div class="ropt" data-g="afford" data-v="30p"  onclick="radA(this)"><div class="rl">$30+</div><div class="rd">Big spenders</div></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(5)">← Back</button>
+    <button class="btn btn-t" onclick="go(7)">Set My Goal →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 7 — SALES GOAL ══════════ -->
+<div class="screen" id="s7">
+  <div class="sh">
+    <div class="phase-pill">🎯 Step 4b — Sales Goal</div>
+    <div class="sh-title">How much do you want to earn? 🤑</div>
+    <div class="sh-sub">Tell us your goal and how many items you'll make — we'll check if they match!</div>
+  </div>
+  <div class="card">
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap">
+      <div style="flex:1; min-width:140px">
+        <div class="slabel">💵 My earning goal:</div>
+        <div class="pfix">
+          <span class="pfix-sym">$</span>
+          <input type="number" class="inp" id="earnGoal" placeholder="e.g. 50" min="0" oninput="updGoal()" />
+        </div>
+      </div>
+      <div style="flex:1; min-width:140px">
+        <div class="slabel">📦 Items I plan to make:</div>
+        <input type="number" class="inp" id="supplyN" placeholder="e.g. 25" min="0" oninput="updGoal()" />
+      </div>
+    </div>
+
+    <div id="goalResult" style="display:none">
+      <div class="bubble-row" id="goalBubbles"></div>
+      <div id="goalMsg" style="margin-top:12px; font-weight:700; font-size:0.88em; color:#1e293b; line-height:1.5"></div>
+    </div>
+
+    <div id="supplyCheck" style="display:none; margin-top:4px"></div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(6)">← Back</button>
+    <button class="btn btn-p" onclick="go(8)">See My Fair Plan →</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 8 — FAIR PLAN SUMMARY ══════════ -->
+<div class="screen" id="s8">
+  <div class="sh">
+    <div class="phase-pill">🎉 Your Fair Business Plan</div>
+    <div class="sh-title">You're ready for the fair! 🚀</div>
+    <div class="sh-sub">Here's your complete plan. Take a screenshot or write it down!</div>
+  </div>
+  <div class="card">
+
+    <div style="text-align:center; padding:8px 0 4px">
+      <div id="plan-icon" style="font-size:2.2em; margin-bottom:8px">🎪</div>
+      <div id="plan-name" style="font-size:1.25em; font-weight:900; color:#1e293b"></div>
+      <div id="plan-kid"  style="font-size:0.85em; color:#64748b; margin-top:4px"></div>
+    </div>
+
+    <div class="snap-sec" style="background:#fff7ed; border:1.5px solid #fed7aa">
+      <div class="snap-h" style="color:#c2410c">📦 What I'm Selling</div>
+      <div class="snap-row"><div class="sk">Product</div><div class="sv" id="ps-prod">—</div></div>
+      <div class="snap-row"><div class="sk">Cost per item</div><div class="sv" id="ps-cost">—</div></div>
+      <div class="snap-row"><div class="sk">Selling price</div><div class="sv" id="ps-price">—</div></div>
+      <div class="snap-row"><div class="sk">Profit per item</div><div class="sv" id="ps-profit">—</div></div>
+    </div>
+
+    <div class="snap-sec" style="background:#f0fdf4; border:1.5px solid #86efac">
+      <div class="snap-h" style="color:#15803d">🎯 My Fair Goal</div>
+      <div class="snap-row"><div class="sk">Items to make</div><div class="sv" id="ps-supply">—</div></div>
+      <div class="snap-row"><div class="sk">Earning goal</div><div class="sv" id="ps-earn">—</div></div>
+      <div class="snap-row"><div class="sk">Max if sold out</div><div class="sv" id="ps-max">—</div></div>
+    </div>
+
+    <div class="nxt-box">
+      <div class="nxt-h">✅ Your 3 Next Steps Before Fair Day</div>
+      <div id="nextSteps"></div>
+    </div>
+
+    <div style="text-align:center; margin-top:4px">
+      <button onclick="resetAll()" style="background:#f8fafc; border:2px solid #e2e8f0; padding:10px 22px; border-radius:10px; cursor:pointer; color:#64748b; font-size:0.88em; font-weight:700; font-family:inherit">🔄 Start Over with a New Idea</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+const S = {
+  name:'',
+  passions:[], skills:[], market:[],
+  moneyPriority:'', timeAvail:'',
+  fairVotes:{},
+  winner:'',
+  budgetMode:'item',
+  matCost:0, timeCost:0, totalCost:0,
+  myPrice:0, earnGoal:0, supplyN:0,
+  afford:'5-15'
+};
+
+// ════════════════════════════════════════════════════════════════
+// IDEA DATABASE
+// invest: 'low'|'mid'|'high' — money/startup cost
+// time:   'quick'|'med'|'long' — time to make each item
+// tags: used to match against passions, skills, market selections
+// ════════════════════════════════════════════════════════════════
+const ALL_IDEAS = [
+  // Art & drawing
+  {i:'🎨', n:'Custom Drawings & Portraits',     w:'Personal and unique — you can charge more for custom work', invest:'low', time:'med',   tags:['art','drawing','custom','gifts']},
+  {i:'💌', n:'Greeting Cards',                  w:'Quick to make, always popular as gifts at fairs',           invest:'low', time:'quick', tags:['art','drawing','gifts','cheap']},
+  {i:'📚', n:'Bookmarks with Original Art',     w:'Very low material cost, high perceived value',              invest:'low', time:'quick', tags:['art','drawing','cheap']},
+  {i:'🏷️', n:'Custom Stickers',                w:'Kids and adults love stickers — great for fair crowds',     invest:'mid', time:'quick', tags:['art','digital','kids','cheap','custom']},
+  {i:'📒', n:'Decorated Notebooks',             w:'Personalized stationery sells really well at fairs',        invest:'low', time:'med',   tags:['art','drawing','organizing','gifts']},
+  {i:'🖼️', n:'Printed Art Posters',            w:'Print at home, sell originals — high margin, low cost',     invest:'mid', time:'quick', tags:['art','digital','drawing','gifts','custom']},
+  // Cooking & baking
+  {i:'🍪', n:'Baked Goods (Cookies & Brownies)', w:'High demand — people always want snacks at fairs',         invest:'low', time:'med',   tags:['cooking','baking','snacks']},
+  {i:'🍋', n:'Lemonade Stand',                  w:'A fair classic — simple, fast, and always in demand',       invest:'low', time:'quick', tags:['cooking','baking','snacks','cheap']},
+  {i:'🌾', n:'Homemade Granola or Snack Bags',  w:'Easy to make in batches, very popular at fairs',            invest:'low', time:'quick', tags:['cooking','baking','snacks','cheap']},
+  {i:'🧁', n:'Decorated Cupcakes',              w:'People love cute food — high visual appeal = higher price', invest:'mid', time:'med',   tags:['cooking','baking','snacks','gifts']},
+  {i:'🦴', n:'Homemade Pet Treats',             w:'Pet owners love buying healthy treats for their animals',   invest:'low', time:'med',   tags:['cooking','baking','animals']},
+  // Crafts & accessories
+  {i:'✨', n:'Friendship Bracelets',            w:'Low cost, super popular with fair visitors of all ages',    invest:'low', time:'quick', tags:['crafting','handmade','accessories','kids','cheap']},
+  {i:'🗝️', n:'Keychains & Bag Charms',         w:'Everyone needs one — they sell fast at fairs',              invest:'low', time:'quick', tags:['crafting','handmade','accessories','kids','cheap']},
+  {i:'🎀', n:'Scrunchies & Hair Accessories',   w:'Trendy, low cost, and quick to make',                       invest:'low', time:'quick', tags:['crafting','handmade','accessories','sewing']},
+  {i:'🧵', n:'Fabric Bookmarks or Keyrings',   w:'Easy to stitch, unique, great for gift buyers',             invest:'low', time:'quick', tags:['crafting','sewing','handmade','gifts']},
+  {i:'🪩', n:'Painted Rocks & Decorative Stones', w:'Unique, low cost, great conversation starters at fairs', invest:'low', time:'med',   tags:['crafting','handmade','nature','gifts','art']},
+  // Plants & nature
+  {i:'🌵', n:'Potted Succulents',               w:'Easy to grow, cheap in bulk, sell really well at fairs',   invest:'mid', time:'med',   tags:['plants','growing','nature','gifts']},
+  {i:'🪴', n:'Painted Flower Pots',             w:'Combines art and plants — unique, giftable, high value',   invest:'mid', time:'med',   tags:['plants','art','drawing','gifts']},
+  {i:'🌿', n:'Fresh Herb Garden Kits',          w:'Adults love herbs — basil, mint, rosemary — easy to package', invest:'low', time:'med', tags:['plants','growing','nature','gifts']},
+  // Organizing & service
+  {i:'🎁', n:'Gift Wrapping Service',           w:'Always needed at fairs and markets — fast, high value',     invest:'low', time:'quick', tags:['organizing','helping','gifts','activities']},
+  // Activities & games
+  {i:'🎮', n:'Homemade Card Games or Puzzles',  w:'Fun and unique — could be a real hit at the fair',          invest:'mid', time:'long',  tags:['activities','kids','building','tech']},
+  // Tech & digital
+  {i:'📲', n:'Phone Case Decorating',           w:'Personal and unique — one-of-a-kind items always attract attention', invest:'mid', time:'med', tags:['tech','digital','custom','accessories']},
+];
+
+// Tag mapping: each selection → which idea tags get boosted
+const PASSION_TAGS = {
+  art:       ['art','drawing'],
+  cooking:   ['cooking','baking'],
+  crafting:  ['crafting','handmade'],
+  plants:    ['plants','growing'],
+  animals:   ['animals'],
+  music:     ['art','custom','drawing'],
+  tech:      ['tech','digital'],
+  sports:    ['activities','helping','cheap'],
+  organizing:['organizing','helping']
+};
+const SKILL_TAGS = {
+  handmade: ['crafting','handmade'],
+  baking:   ['baking','cooking'],
+  drawing:  ['art','drawing','digital'],
+  growing:  ['plants','growing','nature'],
+  helping:  ['helping','organizing'],
+  building: ['crafting','handmade','activities','building'],
+  digital:  ['tech','digital','art'],
+  sewing:   ['sewing','crafting','accessories','handmade']
+};
+const MARKET_TAGS = {
+  snacks:      ['snacks','cooking','baking'],
+  gifts:       ['gifts'],
+  kids:        ['kids'],
+  custom:      ['custom'],
+  cheap:       ['cheap'],
+  nature:      ['nature','plants'],
+  accessories: ['accessories'],
+  activities:  ['activities']
+};
+
+const AFFORD_MAX = { u5:5, '5-15':15, '15-30':30, '30p':60 };
+
+// ════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════════════════
+function go(n) {
+  if (n === 3) buildFilterScreen();
+  if (n === 4) buildPickScreen();
+  if (n === 5) {
+    document.getElementById('budget-prod').textContent = S.winner || 'your product';
+    if (!document.getElementById('budgetRows').children.length) addRow();
+  }
+  if (n === 6) prepPricing();
+  if (n === 8) buildSummary();
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s' + n).classList.add('active');
+  updProgress(n);
+  updBg(n);
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function updProgress(n) {
+  document.getElementById('pBar').style.width = Math.round((n-1)/7*100) + '%';
+}
+function updBg(n) {
+  const cls = n <= 1 ? 'ph0' : n === 2 ? 'ph1' : n <= 4 ? 'ph2' : n <= 7 ? 'ph3' : 'phF';
+  document.body.className = cls;
+}
+
+// ════════════════════════════════════════════════════════════════
+// TOGGLE CHIPS
+// ════════════════════════════════════════════════════════════════
+function tog(btn) {
+  const g = btn.dataset.g, v = btn.dataset.v;
+  btn.classList.toggle('on');
+  if (btn.classList.contains('on')) {
+    if (!S[g]) S[g] = [];
+    if (!S[g].includes(v)) S[g].push(v);
+  } else {
+    S[g] = (S[g]||[]).filter(x => x !== v);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// IDEA POOL
+// ════════════════════════════════════════════════════════════════
+function getIdeaPool() {
+  const relevant = new Set();
+  (S.passions||[]).forEach(p => (PASSION_TAGS[p]||[]).forEach(t => relevant.add(t)));
+  (S.skills||[]).forEach(s   => (SKILL_TAGS[s]||[]).forEach(t   => relevant.add(t)));
+  (S.market||[]).forEach(m   => (MARKET_TAGS[m]||[]).forEach(t  => relevant.add(t)));
+
+  if (relevant.size === 0) return ALL_IDEAS.slice(0, 6);
+
+  const scored = ALL_IDEAS
+    .map(idea => ({ idea, score: idea.tags.filter(t => relevant.has(t)).length }))
+    .filter(x => x.score > 0)
+    .sort((a,b) => b.score - a.score);
+
+  return scored.slice(0, 9).map(x => x.idea);
+}
+
+// ════════════════════════════════════════════════════════════════
+// FILTER SCREEN
+// ════════════════════════════════════════════════════════════════
+function radFilter(el) {
+  const g = el.dataset.g, v = el.dataset.v;
+  document.querySelectorAll(`[data-g="${g}"]`).forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  S[g] = v;
+
+  // Show/hide contextual notes
+  if (g === 'moneyPriority') {
+    document.getElementById('moneyNote').style.display = v === 'yes' ? 'block' : 'none';
+  }
+  if (g === 'timeAvail') {
+    const note = document.getElementById('timeNote');
+    if (v === 'med') { note.style.display='block'; note.textContent='⏳ Time-heavy ideas get crossed out — you need enough time to actually make them!'; }
+    else if (v === 'little') { note.style.display='block'; note.textContent='⚡ Medium and time-heavy ideas get crossed out — stick to things you can make quickly!'; }
+    else { note.style.display='none'; }
+  }
+
+  applyFilters();
+}
+
+function isCrossedByFilter(invest, time) {
+  if (S.moneyPriority === 'yes' && invest === 'high') return true;
+  if (S.timeAvail === 'little' && (time === 'med' || time === 'long')) return true;
+  if (S.timeAvail === 'med' && time === 'long') return true;
+  return false;
+}
+
+function applyFilters() {
+  document.querySelectorAll('.idea-filter-item').forEach(item => {
+    const crossed = isCrossedByFilter(item.dataset.invest, item.dataset.time)
+                 || S.fairVotes[item.dataset.name] === 'no';
+    item.classList.toggle('crossed', crossed);
+  });
+
+  const standing = document.querySelectorAll('.idea-filter-item:not(.crossed)').length;
+  const badge = document.getElementById('ideaCount');
+  if (badge) {
+    badge.textContent = standing + (standing === 1 ? ' idea standing' : ' ideas standing');
+    badge.className = 'count-badge' + (standing === 0 ? ' zero' : '');
+  }
+}
+
+function buildFilterScreen() {
+  const pool = getIdeaPool();
+  const list = document.getElementById('ideaFilterList');
+  list.innerHTML = '';
+
+  pool.forEach(idea => {
+    const div = document.createElement('div');
+    div.className = 'idea-item idea-filter-item';
+    div.dataset.name   = idea.n;
+    div.dataset.invest = idea.invest;
+    div.dataset.time   = idea.time;
+
+    const investTag = {
+      low:  { cls:'tag-low',  lbl:'💚 Low cost' },
+      mid:  { cls:'tag-mid',  lbl:'🟡 Some cost' },
+      high: { cls:'tag-high', lbl:'🔴 High cost' }
+    }[idea.invest] || { cls:'tag-low', lbl:'Low cost' };
+
+    const timeTag = {
+      quick: { cls:'tag-quick', lbl:'⚡ Quick to make' },
+      med:   { cls:'tag-med',   lbl:'⏳ Takes some time' },
+      long:  { cls:'tag-long',  lbl:'🕐 Time-heavy' }
+    }[idea.time] || { cls:'tag-quick', lbl:'Quick' };
+
+    const vote = S.fairVotes[idea.n] || '';
+
+    div.innerHTML = `
+      <div class="idea-top">
+        <div class="idea-icon">${idea.i}</div>
+        <div style="flex:1">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">
+            <div class="idea-name">${idea.n}</div>
+            <span class="crossed-label">crossed out</span>
+          </div>
+          <div class="idea-why">${idea.w}</div>
+          <div class="idea-tags">
+            <span class="tag ${investTag.cls}">${investTag.lbl}</span>
+            <span class="tag ${timeTag.cls}">${timeTag.lbl}</span>
+          </div>
+        </div>
+      </div>
+      <div class="vote-section">
+        <div class="vote-q">👋 Would fair visitors actually buy this?</div>
+        <div class="vote-row">
+          <button class="vote-btn ${vote==='yes'?'yes-on':''}"   onclick="setVote('${idea.n.replace(/'/g,"\\'")}','yes',this)">✅ Yes!</button>
+          <button class="vote-btn ${vote==='maybe'?'maybe-on':''}" onclick="setVote('${idea.n.replace(/'/g,"\\'")}','maybe',this)">🤔 Maybe</button>
+          <button class="vote-btn ${vote==='no'?'no-on':''}"     onclick="setVote('${idea.n.replace(/'/g,"\\'")}','no',this)">❌ Nope</button>
+        </div>
+      </div>`;
+
+    list.appendChild(div);
+  });
+
+  applyFilters();
+}
+
+function setVote(name, vote, btn) {
+  S.fairVotes[name] = vote;
+  const item = btn.closest('.idea-filter-item');
+  item.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('yes-on','maybe-on','no-on'));
+  btn.classList.add(vote + '-on');
+  applyFilters();
+}
+
+// ════════════════════════════════════════════════════════════════
+// PICK SCREEN
+// ════════════════════════════════════════════════════════════════
+function buildPickScreen() {
+  const pool = getIdeaPool();
+  const list = document.getElementById('pickList');
+  list.innerHTML = '';
+
+  const survivors = pool.filter(idea =>
+    !isCrossedByFilter(idea.invest, idea.time) && S.fairVotes[idea.n] !== 'no'
+  );
+
+  if (survivors.length === 0) {
+    list.innerHTML = '<div class="empty-state">😮 All ideas got crossed out!<br>Go back and change your filters, or type your own idea below.</div>';
+  }
+
+  survivors.forEach(idea => {
+    const div = document.createElement('div');
+    div.className = 'pick-card' + (S.winner === idea.n ? ' on' : '');
+    const vote = S.fairVotes[idea.n];
+    const voteBadge = vote === 'yes' ? ' <span style="color:#37C9C1;font-size:0.78em">✅ Fair visitors want this!</span>' :
+                      vote === 'maybe' ? ' <span style="color:#d97706;font-size:0.78em">🤔 Maybe they will</span>' : '';
+    div.innerHTML = `<div style="font-size:1.4em;flex-shrink:0">${idea.i}</div><div><div class="idea-name">${idea.n}${voteBadge}</div><div class="idea-why">${idea.w}</div></div>`;
+    div.onclick = () => {
+      document.querySelectorAll('.pick-card').forEach(c => c.classList.remove('on'));
+      div.classList.add('on');
+      S.winner = idea.n;
+      document.getElementById('customIdea').value = '';
+      showWinnerBadge(idea.n);
+    };
+    list.appendChild(div);
+  });
+
+  if (S.winner) showWinnerBadge(S.winner);
+}
+
+function pickCustom() {
+  const v = document.getElementById('customIdea').value.trim();
+  if (v) {
+    document.querySelectorAll('.pick-card').forEach(c => c.classList.remove('on'));
+    S.winner = v;
+    showWinnerBadge(v);
+  }
+}
+
+function showWinnerBadge(name) {
+  document.getElementById('winnerName').textContent = name;
+  document.getElementById('winnerBadge').style.display = 'block';
+}
+
+// ════════════════════════════════════════════════════════════════
+// BUDGET MODE
+// ════════════════════════════════════════════════════════════════
+function setBudgetMode(mode) {
+  S.budgetMode = mode;
+  document.getElementById('modeItemBtn').classList.toggle('on', mode === 'item');
+  document.getElementById('modeBatchBtn').classList.toggle('on', mode === 'batch');
+  document.getElementById('batchConfig').style.display = mode === 'batch' ? 'block' : 'none';
+  document.getElementById('matHint').textContent = mode === 'batch'
+    ? 'List every material and its TOTAL batch cost'
+    : 'List every material and its cost per item';
+  document.getElementById('timeLabel').textContent = mode === 'batch'
+    ? 'Minutes to make one item (still per item)'
+    : 'Minutes to make one item';
+  updBudget();
+}
+
+// ════════════════════════════════════════════════════════════════
+// BUDGET BUILDER
+// ════════════════════════════════════════════════════════════════
+let rc = 0;
+function addRow(name='', cost='') {
+  rc++;
+  const id = 'br' + rc;
+  const wrap = document.getElementById('budgetRows');
+  const row = document.createElement('div');
+  row.className = 'b-row'; row.id = id;
+  row.innerHTML = `
+    <input type="text" class="inp" placeholder="e.g. Ribbon, Cups, Flour" value="${name}" oninput="updBudget()" style="flex:2" />
+    <div class="pfix" style="flex:1">
+      <span class="pfix-sym">$</span>
+      <input type="number" class="inp cost-inp" placeholder="0.00" value="${cost}" min="0" step="0.01" oninput="updBudget()" />
+    </div>
+    <button class="del-btn" onclick="delRow('${id}')">×</button>`;
+  wrap.appendChild(row);
+  updBudget();
+}
+function delRow(id) { const el=document.getElementById(id); if(el) el.remove(); updBudget(); }
+
+function getMatCost() {
+  let t = 0;
+  document.querySelectorAll('#budgetRows .cost-inp').forEach(i => {
+    const v = parseFloat(i.value); if (!isNaN(v)) t += v;
+  });
+  return t;
+}
+function getTimeCost() {
+  const m = parseFloat(document.getElementById('timeMins')?.value) || 0;
+  const r = parseFloat(document.getElementById('hrRate')?.value) || 0;
+  return (m / 60) * r;
+}
+function updBudget() {
+  const rawMat = getMatCost();
+  const batchN = parseInt(document.getElementById('batchItems')?.value) || 1;
+  S.matCost  = S.budgetMode === 'batch' ? (batchN > 0 ? rawMat / batchN : 0) : rawMat;
+  S.timeCost = getTimeCost();
+  S.totalCost = S.matCost + S.timeCost;
+  const el = document.getElementById('bTotal');
+  const bd = document.getElementById('costBreakdown');
+  if (el) el.textContent = '$' + S.totalCost.toFixed(2);
+  if (bd) bd.textContent = 'Materials: $' + S.matCost.toFixed(2) + ' + Time: $' + S.timeCost.toFixed(2);
+}
+
+// ════════════════════════════════════════════════════════════════
+// PRICING SCREEN
+// ════════════════════════════════════════════════════════════════
+function prepPricing() {
+  updBudget();
+  const c = S.totalCost || 0;
+  const prod = S.winner || 'your item';
+  document.getElementById('price-prod').textContent = prod;
+  document.getElementById('disp-mat').textContent   = '$' + S.matCost.toFixed(2);
+  document.getElementById('disp-time').textContent  = '$' + S.timeCost.toFixed(2);
+  document.getElementById('disp-total').textContent = '$' + c.toFixed(2);
+
+  const opts = [
+    { lbl:'Break-even',  val:c,        cls:'b-orange', sub:'$0 profit — danger zone!' },
+    { lbl:'30% profit',  val:c/0.70,   cls:'b-green',  sub:'Solid margin' },
+    { lbl:'50% profit',  val:c/0.50,   cls:'b-green',  sub:'Aim for this! 🎯' }
+  ];
+  document.getElementById('suggRow').innerHTML = opts.map(o => `
+    <div class="bubble ${o.cls}" style="cursor:pointer;transition:transform 0.15s;flex:1"
+         onclick="setPrice(${o.val.toFixed(2)})"
+         onmouseover="this.style.transform='scale(1.05)'"
+         onmouseout="this.style.transform=''">
+      <div class="bv">$${o.val.toFixed(2)}</div>
+      <div class="bl">${o.lbl}</div>
+      <div style="font-size:0.7em;color:#94a3b8;margin-top:2px">${o.sub}</div>
+    </div>`).join('');
+}
+
+function radA(el) {
+  document.querySelectorAll('[data-g="afford"]').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  S.afford = el.dataset.v;
+  updPriceCheck();
+}
+function setPrice(v) {
+  document.getElementById('myPrice').value = v.toFixed(2);
+  updPriceCheck();
+}
+function updPriceCheck() {
+  const price = parseFloat(document.getElementById('myPrice').value) || 0;
+  S.myPrice = price;
+  const cost = S.totalCost || 0;
+  const affordMax = AFFORD_MAX[S.afford] || 15;
+  const area = document.getElementById('priceCheckArea');
+  if (price <= 0) { area.style.display = 'none'; return; }
+  area.style.display = 'block';
+
+  const be=cost, sweet0=cost*1.2, sweet1=affordMax*0.85, tooHigh=affordMax*1.15;
+  let pct, desc, col;
+  if (price < be) {
+    pct = Math.max(2, (price/Math.max(be,0.01))*22);
+    desc = `🚨 Below your cost — you'd lose $${(be-price).toFixed(2)} per sale. Raise it!`;
+    col = '#ef4444';
+  } else if (price < sweet0) {
+    pct = 22 + ((price-be)/Math.max(sweet0-be,0.01))*18;
+    desc = `⚠️ Only ${Math.round(((price-cost)/price)*100)}% margin. You're covering costs — but push a little higher!`;
+    col = '#d97706';
+  } else if (price <= sweet1) {
+    pct = 40 + ((price-sweet0)/Math.max(sweet1-sweet0,0.01))*35;
+    desc = `✅ Sweet spot! $${(price-cost).toFixed(2)} profit per item — and your customers can afford it.`;
+    col = '#16a34a';
+  } else if (price <= tooHigh) {
+    pct = 75 + ((price-sweet1)/Math.max(tooHigh-sweet1,0.01))*15;
+    desc = `💡 Great profit! But pushing what fair visitors usually spend ($${affordMax}). Test it with a few buyers first.`;
+    col = '#1F23B9';
+  } else {
+    pct = 92;
+    desc = `⚠️ Above what most fair visitors spend. Try $${sweet1.toFixed(2)} for a better price.`;
+    col = '#E55937';
+  }
+  pct = Math.min(Math.max(pct, 2), 96);
+  document.getElementById('pMarker').style.left = pct + '%';
+  const d = document.getElementById('pDesc');
+  d.textContent = desc; d.style.color = col;
+}
+
+// ════════════════════════════════════════════════════════════════
+// SALES GOAL
+// ════════════════════════════════════════════════════════════════
+function updGoal() {
+  const goal   = parseFloat(document.getElementById('earnGoal').value) || 0;
+  const supply = parseInt(document.getElementById('supplyN').value)    || 0;
+  const price  = S.myPrice || 0;
+  const cost   = S.totalCost || 0;
+  const profit = price - cost;
+  S.earnGoal = goal; S.supplyN = supply;
+
+  const resBox = document.getElementById('goalResult');
+  const supBox = document.getElementById('supplyCheck');
+
+  if (goal > 0 && profit > 0) {
+    const needed = Math.ceil(goal / profit);
+    const maxEarn = (profit * supply).toFixed(2);
+    resBox.style.display = 'block';
+    document.getElementById('goalBubbles').innerHTML = `
+      <div class="bubble b-purple" style="flex:1"><div class="bv">${needed}</div><div class="bl">items to sell</div></div>
+      <div class="bubble b-green"  style="flex:1"><div class="bv">$${profit.toFixed(2)}</div><div class="bl">profit / item</div></div>
+      ${supply > 0 ? `<div class="bubble b-blue" style="flex:1"><div class="bv">$${maxEarn}</div><div class="bl">max if sold out</div></div>` : ''}`;
+
+    let msg = '';
+    if (supply > 0) {
+      if (supply >= needed) msg = `✅ You're planning to make ${supply} items — more than the ${needed} you need to hit your $${goal} goal. Great buffer!`;
+      else msg = `⚠️ You need to sell ${needed} items, but only plan to make ${supply}. Make ${needed-supply} more, or lower your goal to $${(profit*supply).toFixed(0)}.`;
+    } else {
+      msg = `To earn $${goal}, sell ${needed} items at $${price.toFixed(2)} each. Each sale gives you $${profit.toFixed(2)} profit.`;
+    }
+    document.getElementById('goalMsg').textContent = msg;
+
+    if (supply > 0) {
+      supBox.style.display = 'block';
+      supBox.className = 'flag ' + (supply >= needed ? 'g' : 'y');
+      supBox.innerHTML = supply >= needed
+        ? `<div class="fi">✅</div><div><div class="ft">Supply &amp; goal are aligned!</div><div class="fb">You have enough items to hit your earning goal at the fair.</div></div>`
+        : `<div class="fi">⚠️</div><div><div class="ft">Not quite enough items</div><div class="fb">You'd need ${needed-supply} more items to hit your goal. Can you make more before the fair?</div></div>`;
+    }
+  } else if (goal > 0 && profit <= 0) {
+    resBox.style.display = 'block';
+    document.getElementById('goalBubbles').innerHTML = '';
+    document.getElementById('goalMsg').textContent = '⚠️ Your price needs to be higher than your cost first. Go back and raise your price!';
+  } else {
+    resBox.style.display = 'none';
+    supBox.style.display = 'none';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// SUMMARY
+// ════════════════════════════════════════════════════════════════
+function buildSummary() {
+  const prod   = S.winner || 'Not chosen yet';
+  const cost   = S.totalCost || 0;
+  const price  = S.myPrice  || 0;
+  const profit = price - cost;
+  const supply = S.supplyN  || 0;
+  const goal   = S.earnGoal || 0;
+  const maxEarn = profit > 0 && supply > 0 ? '$' + (profit * supply).toFixed(2) : '—';
+
+  const ideaData = ALL_IDEAS.find(i => i.n === prod);
+  document.getElementById('plan-icon').textContent = ideaData ? ideaData.i : '🎪';
+  document.getElementById('plan-name').textContent = prod;
+  document.getElementById('plan-kid').textContent  = S.name ? `${S.name}'s Fair Business Plan — Kids Business Fair 2026` : 'Kids Business Fair 2026';
+
+  document.getElementById('ps-prod').textContent   = prod;
+  document.getElementById('ps-cost').textContent   = '$' + cost.toFixed(2);
+  document.getElementById('ps-price').textContent  = price > 0 ? '$' + price.toFixed(2) : 'Not set yet';
+  document.getElementById('ps-profit').textContent = profit > 0 ? '$' + profit.toFixed(2) + ' per item ✅' : '—';
+  document.getElementById('ps-supply').textContent = supply > 0 ? supply + ' items' : '—';
+  document.getElementById('ps-earn').textContent   = goal > 0 ? '$' + goal : '—';
+  document.getElementById('ps-max').textContent    = maxEarn;
+
+  // Next steps
+  const steps = [];
+  if (cost === 0) {
+    steps.push({ t:'Calculate your real costs', d:'Go back to the Budget Builder and add all your material and time costs so you know exactly what you\'re spending.' });
+  } else {
+    const shopCost = (cost * Math.max(supply, 1)).toFixed(2);
+    steps.push({ t:'Go buy your supplies 🛒', d:`You need about $${shopCost} in supplies ${supply > 0 ? `for your ${supply} items` : 'to get started'}. Make a shopping list and go this week!` });
+  }
+
+  if (price <= 0 || profit <= 0) {
+    steps.push({ t:'Set your selling price 🏷️', d:`A good price for ${prod || 'your product'} should be at least $${(cost * 1.3).toFixed(2)} to make a solid profit.` });
+  } else {
+    const needed = profit > 0 ? Math.ceil(goal / profit) : 0;
+    steps.push({ t:`Make ${supply > 0 ? supply : '???'} items before fair day 📦`, d:`Each ${prod} you sell earns you $${profit.toFixed(2)} profit.${needed > 0 ? ` You need ${needed} sold to hit your goal — so start making them now!` : ''}` });
+  }
+
+  steps.push({ t:'Set up an amazing display 🎪', d:`A great fair table has a clear price sign, a colorful cover, and a sample to show off. Think about how to make your ${prod || 'product'} look amazing when people walk by!` });
+
+  document.getElementById('nextSteps').innerHTML = steps.slice(0,3).map((s,i) => `
+    <div class="nxt-step">
+      <div class="nxt-n">${i+1}</div>
+      <div><div class="nxt-t">${s.t}</div><div class="nxt-d">${s.d}</div></div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════════════
+// RESET
+// ════════════════════════════════════════════════════════════════
+function resetAll() {
+  Object.assign(S, {
+    name:'', passions:[], skills:[], market:[],
+    moneyPriority:'', timeAvail:'', fairVotes:{},
+    winner:'', budgetMode:'item',
+    matCost:0, timeCost:0, totalCost:0,
+    myPrice:0, earnGoal:0, supplyN:0, afford:'5-15'
+  });
+  document.querySelectorAll('.tbtn.on, .inline-ropt.on, .ropt.on').forEach(el => el.classList.remove('on'));
+  document.getElementById('kidName').value = '';
+  document.getElementById('budgetRows').innerHTML = '';
+  document.getElementById('winnerBadge').style.display = 'none';
+  document.getElementById('moneyNote').style.display = 'none';
+  document.getElementById('timeNote').style.display = 'none';
+  rc = 0;
+  go(1);
+}
+</script>
+</body>
+</html>

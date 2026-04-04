@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Julian's Business Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito','Segoe UI',sans-serif;min-height:100vh;background:linear-gradient(145deg,#1F23B9 0%,#37C9C1 100%);display:flex;align-items:center;justify-content:center;padding:24px;}
+.wrap{max-width:560px;width:100%;text-align:center;}
+.logo{font-size:3.5em;margin-bottom:12px;}
+h1{color:white;font-size:2.2em;font-weight:900;text-shadow:0 2px 12px rgba(0,0,0,.2);line-height:1.2;}
+.sub{color:rgba(255,255,255,.8);font-size:1em;font-weight:600;margin:10px 0 36px;}
+.cards{display:flex;flex-direction:column;gap:16px;}
+.card{background:white;border-radius:20px;padding:24px 28px;box-shadow:0 12px 40px rgba(0,0,0,.2);text-decoration:none;display:flex;align-items:center;gap:16px;transition:transform .2s,box-shadow .2s;text-align:left;}
+.card:hover{transform:translateY(-3px);box-shadow:0 18px 50px rgba(0,0,0,.25);}
+.card-icon{font-size:2.4em;flex-shrink:0;}
+.card-title{font-size:1.1em;font-weight:900;color:#1e293b;}
+.card-desc{font-size:.83em;color:#64748b;font-weight:600;margin-top:3px;line-height:1.45;}
+.card-arrow{margin-left:auto;font-size:1.4em;color:#cbd5e1;flex-shrink:0;}
+.footer{color:rgba(255,255,255,.55);font-size:.8em;font-weight:600;margin-top:32px;}
+@media(max-width:440px){h1{font-size:1.75em;}.card{padding:18px 20px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">🚀</div>
+  <h1>Julian's Business Lab</h1>
+  <p class="sub">Free tools for young entrepreneurs — made by Julian, age 11</p>
+
+  <div class="cards">
+    <a class="card" href="business-builder.html">
+      <div class="card-icon">📦</div>
+      <div>
+        <div class="card-title">The Business Builder</div>
+        <div class="card-desc">Turn your passion into a real business plan — find your idea, know your customers, set your price, and hit your goal.</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+    <a class="card" href="fair-builder.html">
+      <div class="card-icon">🎪</div>
+      <div>
+        <div class="card-title">The Fair Builder</div>
+        <div class="card-desc">Planning a table at a fair or market? Build your idea, budget, price, and sales goal — all in one place.</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="footer">julianbusinessman.com · Julian's Business Lab</div>
+</div>
+</body>
+</html>
