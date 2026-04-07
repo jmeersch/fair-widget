@@ -182,8 +182,36 @@
     .nxt-t { font-weight:700; color:#1e293b; font-size:0.9em; }
     .nxt-d { font-size:0.79em; color:#64748b; margin-top:2px; line-height:1.4; }
 
+    /* Add-your-own */
+    .add-own-row { display:flex; gap:8px; margin-top:8px; }
+    .add-own-inp { flex:1; border:2px solid #e2e8f0; border-radius:10px; padding:8px 12px; font-family:inherit; font-size:0.85em; font-weight:600; outline:none; transition:border-color 0.15s; }
+    .add-own-inp:focus { border-color:#37C9C1; }
+    .add-own-btn { background:#37C9C1; border:none; border-radius:10px; color:white; font-size:1.2em; font-weight:700; padding:0 14px; cursor:pointer; }
+    .add-own-btn:hover { background:#2db5ad; }
+
+    /* Charity */
+    .charity-box { background:#fdf4ff; border:2px solid #e9d5ff; border-radius:12px; padding:14px; }
+    .toggle-row { display:flex; align-items:center; gap:12px; }
+    .toggle-sw { position:relative; width:44px; height:24px; flex-shrink:0; }
+    .toggle-sw input { opacity:0; width:0; height:0; }
+    .toggle-sl { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#e2e8f0; border-radius:24px; transition:.3s; }
+    .toggle-sl:before { position:absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background:white; border-radius:50%; transition:.3s; }
+    input:checked+.toggle-sl { background:#a855f7; }
+    input:checked+.toggle-sl:before { transform:translateX(20px); }
+    .toggle-lbl { font-weight:700; color:#1e293b; font-size:0.93em; }
+    .charity-pct-row { display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; }
+    .pct-btn { flex:1; min-width:44px; border:2px solid #e2e8f0; border-radius:10px; padding:8px 4px; text-align:center; font-size:0.85em; font-weight:700; cursor:pointer; background:#f8fafc; color:#475569; font-family:inherit; transition:all 0.15s; }
+    .pct-btn:hover { border-color:#a855f7; }
+    .pct-btn.on { background:#a855f7; border-color:#a855f7; color:white; }
+    .charity-result { background:#f3e8ff; border-radius:10px; padding:12px; font-size:0.85em; font-weight:700; color:#7c3aed; margin-top:10px; line-height:1.5; }
+
     /* Empty state */
     .empty-state { text-align:center; padding:30px 20px; color:#94a3b8; font-size:0.9em; font-weight:600; line-height:1.6; }
+
+    /* Pick error */
+    .pick-error { background:#fee2e2; border:2px solid #fca5a5; border-radius:12px; padding:13px 15px; text-align:center; font-weight:800; color:#b91c1c; font-size:0.9em; display:none; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
+    .pick-error.shaking { animation: shake 0.4s ease; }
 
     /* Step intro blocks (welcome screen) */
     .step-block { display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:12px; }
@@ -249,16 +277,19 @@
     <div>
       <div class="slabel">❤️ What do you love?</div>
       <div class="hint">Pick all your passions</div>
-      <div class="tgrid">
-        <div class="tbtn" data-g="passions" data-v="art"       onclick="tog(this)">🎨 Art &amp; Drawing</div>
-        <div class="tbtn" data-g="passions" data-v="cooking"   onclick="tog(this)">🍳 Cooking &amp; Baking</div>
-        <div class="tbtn" data-g="passions" data-v="crafting"  onclick="tog(this)">✂️ Crafts &amp; Making</div>
-        <div class="tbtn" data-g="passions" data-v="plants"    onclick="tog(this)">🌱 Plants &amp; Nature</div>
-        <div class="tbtn" data-g="passions" data-v="animals"   onclick="tog(this)">🐾 Animals &amp; Pets</div>
-        <div class="tbtn" data-g="passions" data-v="music"     onclick="tog(this)">🎵 Music &amp; Writing</div>
-        <div class="tbtn" data-g="passions" data-v="tech"      onclick="tog(this)">💻 Tech &amp; Design</div>
-        <div class="tbtn" data-g="passions" data-v="sports"    onclick="tog(this)">⚽ Sports &amp; Being Active</div>
+      <div class="tgrid" id="passGrid">
+        <div class="tbtn" data-g="passions" data-v="art"        onclick="tog(this)">🎨 Art &amp; Drawing</div>
+        <div class="tbtn" data-g="passions" data-v="crafting"   onclick="tog(this)">✂️ Crafts &amp; Making</div>
+        <div class="tbtn" data-g="passions" data-v="plants"     onclick="tog(this)">🌱 Plants &amp; Nature</div>
+        <div class="tbtn" data-g="passions" data-v="animals"    onclick="tog(this)">🐾 Animals &amp; Pets</div>
+        <div class="tbtn" data-g="passions" data-v="music"      onclick="tog(this)">🎵 Music &amp; Writing</div>
+        <div class="tbtn" data-g="passions" data-v="tech"       onclick="tog(this)">💻 Tech &amp; Design</div>
+        <div class="tbtn" data-g="passions" data-v="sports"     onclick="tog(this)">⚽ Sports &amp; Being Active</div>
         <div class="tbtn" data-g="passions" data-v="organizing" onclick="tog(this)">📋 Organizing &amp; Planning</div>
+      </div>
+      <div class="add-own-row">
+        <input type="text" class="add-own-inp" id="customPassionInp" placeholder="Add your own passion…" />
+        <button class="add-own-btn" onclick="addOwn('passions','customPassionInp','passGrid')">+</button>
       </div>
     </div>
 
@@ -267,15 +298,18 @@
     <div>
       <div class="slabel">💪 What are you good at making, providing, or doing?</div>
       <div class="hint">Pick your strongest skills</div>
-      <div class="tgrid">
+      <div class="tgrid" id="skillGrid">
         <div class="tbtn" data-g="skills" data-v="handmade" onclick="tog(this)">🙌 Making things by hand</div>
-        <div class="tbtn" data-g="skills" data-v="baking"   onclick="tog(this)">🧁 Baking &amp; cooking food</div>
         <div class="tbtn" data-g="skills" data-v="drawing"  onclick="tog(this)">✏️ Drawing &amp; designing</div>
         <div class="tbtn" data-g="skills" data-v="growing"  onclick="tog(this)">🌿 Growing plants</div>
         <div class="tbtn" data-g="skills" data-v="helping"  onclick="tog(this)">🤝 Helping &amp; taking care of things</div>
         <div class="tbtn" data-g="skills" data-v="building" onclick="tog(this)">🔨 Building &amp; assembling</div>
         <div class="tbtn" data-g="skills" data-v="digital"  onclick="tog(this)">🖥️ Digital design &amp; printing</div>
         <div class="tbtn" data-g="skills" data-v="sewing"   onclick="tog(this)">🪡 Sewing &amp; stitching</div>
+      </div>
+      <div class="add-own-row">
+        <input type="text" class="add-own-inp" id="customSkillInp" placeholder="Add your own skill…" />
+        <button class="add-own-btn" onclick="addOwn('skills','customSkillInp','skillGrid')">+</button>
       </div>
     </div>
 
@@ -284,8 +318,7 @@
     <div>
       <div class="slabel">👀 What do you notice fair visitors want?</div>
       <div class="hint">What have you seen people buy at markets and fairs?</div>
-      <div class="tgrid">
-        <div class="tbtn" data-g="market" data-v="snacks"      onclick="tog(this)">🍿 They love snacks &amp; food</div>
+      <div class="tgrid" id="marketGrid">
         <div class="tbtn" data-g="market" data-v="gifts"       onclick="tog(this)">🎁 They look for unique gifts</div>
         <div class="tbtn" data-g="market" data-v="kids"        onclick="tog(this)">👧 Kids want fun stuff</div>
         <div class="tbtn" data-g="market" data-v="custom"      onclick="tog(this)">✨ People love personalized things</div>
@@ -293,6 +326,10 @@
         <div class="tbtn" data-g="market" data-v="nature"      onclick="tog(this)">🌸 Plant &amp; nature lovers shop here</div>
         <div class="tbtn" data-g="market" data-v="accessories" onclick="tog(this)">💍 Accessories &amp; wearables sell</div>
         <div class="tbtn" data-g="market" data-v="activities"  onclick="tog(this)">🎲 Games &amp; activities are popular</div>
+      </div>
+      <div class="add-own-row">
+        <input type="text" class="add-own-inp" id="customMarketInp" placeholder="Add something you've noticed people want…" />
+        <button class="add-own-btn" onclick="addOwn('market','customMarketInp','marketGrid')">+</button>
       </div>
     </div>
 
@@ -371,6 +408,7 @@
       <div class="slabel">💡 Or write your own idea:</div>
       <input type="text" class="inp" id="customIdea" placeholder="Type your own product idea..." oninput="pickCustom()" />
     </div>
+    <div class="pick-error" id="pickError">👆 Pick one idea above (or type your own below) before moving on!</div>
     <div class="winner-badge" id="winnerBadge">
       <div style="font-size:0.78em; color:#0d9e97; font-weight:800; letter-spacing:0.05em; text-transform:uppercase">You picked</div>
       <div id="winnerName" style="font-size:1.35em; font-weight:900; color:#1e293b; margin-top:5px"></div>
@@ -378,7 +416,7 @@
   </div>
   <div class="btn-row">
     <button class="btn btn-s" onclick="go(3)">← Back</button>
-    <button class="btn btn-t" onclick="go(5)">Build My Budget →</button>
+    <button class="btn btn-t" onclick="tryGoToBudget()">Build My Budget →</button>
   </div>
 </div>
 
@@ -501,10 +539,39 @@
     <div>
       <div class="slabel">👛 What do fair visitors usually spend?</div>
       <div class="afford-grid">
-        <div class="ropt" data-g="afford" data-v="u5"   onclick="radA(this)"><div class="rl">Under $5</div><div class="rd">Budget buyers</div></div>
-        <div class="ropt" data-g="afford" data-v="5-15" onclick="radA(this)"><div class="rl">$5 – $15</div><div class="rd">Most fair visitors</div></div>
+        <div class="ropt" data-g="afford" data-v="u5"    onclick="radA(this)"><div class="rl">Under $5</div><div class="rd">Budget buyers</div></div>
+        <div class="ropt" data-g="afford" data-v="5-15"  onclick="radA(this)"><div class="rl">$5 – $15</div><div class="rd">Most fair visitors</div></div>
         <div class="ropt" data-g="afford" data-v="15-30" onclick="radA(this)"><div class="rl">$15 – $30</div><div class="rd">Willing to splurge</div></div>
-        <div class="ropt" data-g="afford" data-v="30p"  onclick="radA(this)"><div class="rl">$30+</div><div class="rd">Big spenders</div></div>
+        <div class="ropt" data-g="afford" data-v="30p"   onclick="radA(this)"><div class="rl">$30+</div><div class="rd">Big spenders</div></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Charity -->
+    <div class="charity-box">
+      <div class="toggle-row">
+        <label class="toggle-sw">
+          <input type="checkbox" id="charityToggle" onchange="updCharity()" />
+          <span class="toggle-sl"></span>
+        </label>
+        <span class="toggle-lbl">🎗️ Donate a % of my profit to charity</span>
+      </div>
+      <div id="charity-inner" style="display:none">
+        <div class="hint" style="margin-top:8px;margin-bottom:0">Choose how much of your profit goes to charity — we'll show you exactly what you keep and adjust your break-even price.</div>
+        <div class="charity-pct-row">
+          <button class="pct-btn" data-pct="5"  onclick="setPct(this)">5%</button>
+          <button class="pct-btn" data-pct="10" onclick="setPct(this)">10%</button>
+          <button class="pct-btn" data-pct="15" onclick="setPct(this)">15%</button>
+          <button class="pct-btn" data-pct="20" onclick="setPct(this)">20%</button>
+          <button class="pct-btn" data-pct="25" onclick="setPct(this)">25%</button>
+          <button class="pct-btn on" data-pct="30" onclick="setPct(this)">30% ⭐</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <span style="font-size:0.85em;font-weight:700;color:#7c3aed">Or type your own %:</span>
+          <input type="number" class="inp" id="customPct" placeholder="e.g. 12" min="1" max="99" style="width:90px;font-size:0.85em" oninput="updCharity()" />
+        </div>
+        <div class="charity-result" id="charity-result" style="display:none"></div>
       </div>
     </div>
 
@@ -573,6 +640,8 @@
       <div class="snap-row"><div class="sk">Cost per item</div><div class="sv" id="ps-cost">—</div></div>
       <div class="snap-row"><div class="sk">Selling price</div><div class="sv" id="ps-price">—</div></div>
       <div class="snap-row"><div class="sk">Profit per item</div><div class="sv" id="ps-profit">—</div></div>
+      <div class="snap-row" id="ps-charity-row" style="display:none"><div class="sk">🎗️ Charity donation / item</div><div class="sv" id="ps-charity">—</div></div>
+      <div class="snap-row" id="ps-keep-row" style="display:none"><div class="sk">You keep / item</div><div class="sv" id="ps-keep">—</div></div>
     </div>
 
     <div class="snap-sec" style="background:#f0fdf4; border:1.5px solid #86efac">
@@ -608,7 +677,8 @@ const S = {
   budgetMode:'item',
   matCost:0, timeCost:0, totalCost:0,
   myPrice:0, earnGoal:0, supplyN:0,
-  afford:'5-15'
+  afford:'5-15',
+  donateOn:false, donatePct:30
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -617,7 +687,8 @@ const S = {
 // time:   'quick'|'med'|'long' — time to make each item
 // tags: used to match against passions, skills, market selections
 // ════════════════════════════════════════════════════════════════
-const ALL_IDEAS = [
+// Fallback idea library (used when ideas.json can't be loaded, e.g. opened as file://)
+const FALLBACK_IDEAS = [
   // Art & drawing
   {i:'🎨', n:'Custom Drawings & Portraits',     w:'Personal and unique — you can charge more for custom work', invest:'low', time:'med',   tags:['art','drawing','custom','gifts']},
   {i:'💌', n:'Greeting Cards',                  w:'Quick to make, always popular as gifts at fairs',           invest:'low', time:'quick', tags:['art','drawing','gifts','cheap']},
@@ -625,12 +696,8 @@ const ALL_IDEAS = [
   {i:'🏷️', n:'Custom Stickers',                w:'Kids and adults love stickers — great for fair crowds',     invest:'mid', time:'quick', tags:['art','digital','kids','cheap','custom']},
   {i:'📒', n:'Decorated Notebooks',             w:'Personalized stationery sells really well at fairs',        invest:'low', time:'med',   tags:['art','drawing','organizing','gifts']},
   {i:'🖼️', n:'Printed Art Posters',            w:'Print at home, sell originals — high margin, low cost',     invest:'mid', time:'quick', tags:['art','digital','drawing','gifts','custom']},
-  // Cooking & baking
-  {i:'🍪', n:'Baked Goods (Cookies & Brownies)', w:'High demand — people always want snacks at fairs',         invest:'low', time:'med',   tags:['cooking','baking','snacks']},
-  {i:'🍋', n:'Lemonade Stand',                  w:'A fair classic — simple, fast, and always in demand',       invest:'low', time:'quick', tags:['cooking','baking','snacks','cheap']},
-  {i:'🌾', n:'Homemade Granola or Snack Bags',  w:'Easy to make in batches, very popular at fairs',            invest:'low', time:'quick', tags:['cooking','baking','snacks','cheap']},
-  {i:'🧁', n:'Decorated Cupcakes',              w:'People love cute food — high visual appeal = higher price', invest:'mid', time:'med',   tags:['cooking','baking','snacks','gifts']},
-  {i:'🦴', n:'Homemade Pet Treats',             w:'Pet owners love buying healthy treats for their animals',   invest:'low', time:'med',   tags:['cooking','baking','animals']},
+  // Animals
+  {i:'🦴', n:'Homemade Pet Treats',             w:'Pet owners love buying healthy treats for their animals',   invest:'low', time:'med',   tags:['animals','handmade']},
   // Crafts & accessories
   {i:'✨', n:'Friendship Bracelets',            w:'Low cost, super popular with fair visitors of all ages',    invest:'low', time:'quick', tags:['crafting','handmade','accessories','kids','cheap']},
   {i:'🗝️', n:'Keychains & Bag Charms',         w:'Everyone needs one — they sell fast at fairs',              invest:'low', time:'quick', tags:['crafting','handmade','accessories','kids','cheap']},
@@ -649,10 +716,32 @@ const ALL_IDEAS = [
   {i:'📲', n:'Phone Case Decorating',           w:'Personal and unique — one-of-a-kind items always attract attention', invest:'mid', time:'med', tags:['tech','digital','custom','accessories']},
 ];
 
+// Main idea library — loaded from ideas.json, falls back to FALLBACK_IDEAS
+let ALL_IDEAS = FALLBACK_IDEAS;
+let _ideasReady = false;
+let _ideasReadyCallbacks = [];
+
+function onIdeasReady(fn) {
+  if (_ideasReady) { fn(); return; }
+  _ideasReadyCallbacks.push(fn);
+}
+function _ideasLoaded(data) {
+  ALL_IDEAS = Array.isArray(data) && data.length > 0 ? data : FALLBACK_IDEAS;
+  _ideasReady = true;
+  _ideasReadyCallbacks.forEach(fn => fn());
+  _ideasReadyCallbacks = [];
+}
+
+(function loadIdeas() {
+  fetch('ideas.json')
+    .then(r => { if (!r.ok) throw new Error('not ok'); return r.json(); })
+    .then(data => _ideasLoaded(data))
+    .catch(() => _ideasLoaded(FALLBACK_IDEAS));
+})();
+
 // Tag mapping: each selection → which idea tags get boosted
 const PASSION_TAGS = {
   art:       ['art','drawing'],
-  cooking:   ['cooking','baking'],
   crafting:  ['crafting','handmade'],
   plants:    ['plants','growing'],
   animals:   ['animals'],
@@ -663,7 +752,6 @@ const PASSION_TAGS = {
 };
 const SKILL_TAGS = {
   handmade: ['crafting','handmade'],
-  baking:   ['baking','cooking'],
   drawing:  ['art','drawing','digital'],
   growing:  ['plants','growing','nature'],
   helping:  ['helping','organizing'],
@@ -672,7 +760,6 @@ const SKILL_TAGS = {
   sewing:   ['sewing','crafting','accessories','handmade']
 };
 const MARKET_TAGS = {
-  snacks:      ['snacks','cooking','baking'],
   gifts:       ['gifts'],
   kids:        ['kids'],
   custom:      ['custom'],
@@ -713,7 +800,7 @@ function updBg(n) {
 }
 
 // ════════════════════════════════════════════════════════════════
-// TOGGLE CHIPS
+// TOGGLE CHIPS + ADD YOUR OWN
 // ════════════════════════════════════════════════════════════════
 function tog(btn) {
   const g = btn.dataset.g, v = btn.dataset.v;
@@ -726,23 +813,70 @@ function tog(btn) {
   }
 }
 
+function addOwn(group, inputId, gridId) {
+  const inp = document.getElementById(inputId);
+  const val = inp.value.trim();
+  if (!val) return;
+  inp.value = '';
+  const key = 'custom_' + val.toLowerCase().replace(/\s+/g,'_');
+  if ((S[group]||[]).includes(key)) return;
+  if (!S[group]) S[group] = [];
+  S[group].push(key);
+  const btn = document.createElement('div');
+  btn.className = 'tbtn on';
+  btn.dataset.g = group;
+  btn.dataset.v = key;
+  btn.textContent = val;
+  btn.onclick = () => tog(btn);
+  document.getElementById(gridId).appendChild(btn);
+}
+
 // ════════════════════════════════════════════════════════════════
 // IDEA POOL
 // ════════════════════════════════════════════════════════════════
+function titleCase(str) {
+  return str.replace(/\b\w/g, c => c.toUpperCase());
+}
+
 function getIdeaPool() {
   const relevant = new Set();
-  (S.passions||[]).forEach(p => (PASSION_TAGS[p]||[]).forEach(t => relevant.add(t)));
-  (S.skills||[]).forEach(s   => (SKILL_TAGS[s]||[]).forEach(t   => relevant.add(t)));
-  (S.market||[]).forEach(m   => (MARKET_TAGS[m]||[]).forEach(t  => relevant.add(t)));
+  const customIdeas = [];
 
-  if (relevant.size === 0) return ALL_IDEAS.slice(0, 6);
+  (S.passions||[]).forEach(p => {
+    if (p.startsWith('custom_')) {
+      const label = titleCase(p.replace('custom_','').replace(/_/g,' '));
+      customIdeas.push({ i:'💡', n:label, w:'A business based on your own passion — you know it best!', invest:'low', time:'med', tags:[] });
+    } else {
+      (PASSION_TAGS[p]||[]).forEach(t => relevant.add(t));
+    }
+  });
+  (S.skills||[]).forEach(s => {
+    if (!s.startsWith('custom_')) (SKILL_TAGS[s]||[]).forEach(t => relevant.add(t));
+  });
+  (S.market||[]).forEach(m => {
+    if (m.startsWith('custom_')) {
+      const label = titleCase(m.replace('custom_','').replace(/_/g,' '));
+      customIdeas.push({ i:'🛍️', n:label, w:"You spotted this need yourself — that's the best kind of market research!", invest:'low', time:'med', tags:[] });
+    } else {
+      (MARKET_TAGS[m]||[]).forEach(t => relevant.add(t));
+    }
+  });
 
-  const scored = ALL_IDEAS
-    .map(idea => ({ idea, score: idea.tags.filter(t => relevant.has(t)).length }))
-    .filter(x => x.score > 0)
-    .sort((a,b) => b.score - a.score);
+  let scored = [];
+  if (relevant.size > 0) {
+    scored = ALL_IDEAS
+      .map(idea => ({ idea, score: idea.tags.filter(t => relevant.has(t)).length }))
+      .filter(x => x.score > 0)
+      .sort((a,b) => b.score - a.score)
+      .slice(0, 9)
+      .map(x => x.idea);
+  }
 
-  return scored.slice(0, 9).map(x => x.idea);
+  // Merge custom ideas first, deduplicate by name, cap at 9
+  const seen = new Set(customIdeas.map(c => c.n));
+  const merged = [...customIdeas, ...scored.filter(i => !seen.has(i.n))];
+  if (merged.length === 0) return ALL_IDEAS.slice(0, 6);
+  return merged.slice(0, 9);
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -791,6 +925,13 @@ function applyFilters() {
 }
 
 function buildFilterScreen() {
+  if (!_ideasReady) {
+    // Show a loading state and retry once ideas.json arrives
+    const list = document.getElementById('ideaFilterList');
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:#64748b;font-weight:700;">⏳ Loading ideas…</div>';
+    onIdeasReady(() => buildFilterScreen());
+    return;
+  }
   const pool = getIdeaPool();
   const list = document.getElementById('ideaFilterList');
   list.innerHTML = '';
@@ -902,6 +1043,20 @@ function pickCustom() {
 function showWinnerBadge(name) {
   document.getElementById('winnerName').textContent = name;
   document.getElementById('winnerBadge').style.display = 'block';
+  document.getElementById('pickError').style.display = 'none';
+}
+
+function tryGoToBudget() {
+  if (!S.winner) {
+    const err = document.getElementById('pickError');
+    err.style.display = 'block';
+    err.classList.remove('shaking');
+    void err.offsetWidth; // force reflow so animation restarts
+    err.classList.add('shaking');
+    err.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    return;
+  }
+  go(5);
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1011,10 +1166,12 @@ function updPriceCheck() {
   const cost = S.totalCost || 0;
   const affordMax = AFFORD_MAX[S.afford] || 15;
   const area = document.getElementById('priceCheckArea');
-  if (price <= 0) { area.style.display = 'none'; return; }
+  if (price <= 0) { area.style.display = 'none'; updCharity(); return; }
   area.style.display = 'block';
 
-  const be=cost, sweet0=cost*1.2, sweet1=affordMax*0.85, tooHigh=affordMax*1.15;
+  // If charity is on, the effective break-even is higher — need more revenue to cover cost + donation
+  const effectiveCost = S.donateOn ? cost / (1 - S.donatePct/100) : cost;
+  const be=cost, sweet0=effectiveCost*1.15, sweet1=affordMax*0.85, tooHigh=affordMax*1.15;
   let pct, desc, col;
   if (price < be) {
     pct = Math.max(2, (price/Math.max(be,0.01))*22);
@@ -1022,11 +1179,17 @@ function updPriceCheck() {
     col = '#ef4444';
   } else if (price < sweet0) {
     pct = 22 + ((price-be)/Math.max(sweet0-be,0.01))*18;
-    desc = `⚠️ Only ${Math.round(((price-cost)/price)*100)}% margin. You're covering costs — but push a little higher!`;
+    const margin = Math.round(((price-cost)/price)*100);
+    desc = S.donateOn
+      ? `⚠️ ${margin}% margin — after your ${S.donatePct}% donation you might not make much. Push higher!`
+      : `⚠️ Only ${margin}% margin. You're covering costs — but push a little higher!`;
     col = '#d97706';
   } else if (price <= sweet1) {
     pct = 40 + ((price-sweet0)/Math.max(sweet1-sweet0,0.01))*35;
-    desc = `✅ Sweet spot! $${(price-cost).toFixed(2)} profit per item — and your customers can afford it.`;
+    const keep = S.donateOn ? (price-cost)*(1-S.donatePct/100) : price-cost;
+    desc = S.donateOn
+      ? `✅ Sweet spot! After your ${S.donatePct}% donation you keep $${keep.toFixed(2)}/item — and customers can afford it.`
+      : `✅ Sweet spot! $${(price-cost).toFixed(2)} profit per item — and your customers can afford it.`;
     col = '#16a34a';
   } else if (price <= tooHigh) {
     pct = 75 + ((price-sweet1)/Math.max(tooHigh-sweet1,0.01))*15;
@@ -1041,6 +1204,40 @@ function updPriceCheck() {
   document.getElementById('pMarker').style.left = pct + '%';
   const d = document.getElementById('pDesc');
   d.textContent = desc; d.style.color = col;
+  updCharity();
+}
+
+// ════════════════════════════════════════════════════════════════
+// CHARITY DONATION
+// ════════════════════════════════════════════════════════════════
+function updCharity() {
+  const toggle = document.getElementById('charityToggle');
+  if (!toggle) return;
+  S.donateOn = toggle.checked;
+  document.getElementById('charity-inner').style.display = S.donateOn ? 'block' : 'none';
+  if (!S.donateOn) { document.getElementById('charity-result').style.display = 'none'; return; }
+  const customPct = parseInt(document.getElementById('customPct').value) || 0;
+  if (customPct > 0) S.donatePct = Math.min(customPct, 99);
+  const price = S.myPrice || 0;
+  const cost  = S.totalCost || 0;
+  if (price > cost) {
+    const profit  = price - cost;
+    const donate  = profit * (S.donatePct / 100);
+    const keep    = profit - donate;
+    const res = document.getElementById('charity-result');
+    res.style.display = 'block';
+    res.innerHTML = `At $${price.toFixed(2)}: Profit $${profit.toFixed(2)}/item → 🎗️ Donate <strong>$${donate.toFixed(2)}</strong> → You keep <strong>$${keep.toFixed(2)}</strong>`;
+  } else {
+    document.getElementById('charity-result').style.display = 'none';
+  }
+}
+
+function setPct(btn) {
+  document.querySelectorAll('.pct-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  S.donatePct = parseInt(btn.dataset.pct);
+  document.getElementById('customPct').value = '';
+  updCharity();
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1052,40 +1249,59 @@ function updGoal() {
   const price  = S.myPrice || 0;
   const cost   = S.totalCost || 0;
   const profit = price - cost;
+  const netProfit = S.donateOn ? profit * (1 - S.donatePct/100) : profit;
   S.earnGoal = goal; S.supplyN = supply;
 
   const resBox = document.getElementById('goalResult');
   const supBox = document.getElementById('supplyCheck');
 
-  if (goal > 0 && profit > 0) {
-    const needed = Math.ceil(goal / profit);
-    const maxEarn = (profit * supply).toFixed(2);
+  if (goal > 0 && netProfit > 0) {
+    const needed  = Math.ceil(goal / netProfit);
+    const maxEarn = (netProfit * supply).toFixed(2);
     resBox.style.display = 'block';
+    const keepLbl = S.donateOn ? 'you keep/item' : 'profit / item';
     document.getElementById('goalBubbles').innerHTML = `
       <div class="bubble b-purple" style="flex:1"><div class="bv">${needed}</div><div class="bl">items to sell</div></div>
-      <div class="bubble b-green"  style="flex:1"><div class="bv">$${profit.toFixed(2)}</div><div class="bl">profit / item</div></div>
+      <div class="bubble b-green"  style="flex:1"><div class="bv">$${netProfit.toFixed(2)}</div><div class="bl">${keepLbl}</div></div>
       ${supply > 0 ? `<div class="bubble b-blue" style="flex:1"><div class="bv">$${maxEarn}</div><div class="bl">max if sold out</div></div>` : ''}`;
 
     let msg = '';
     if (supply > 0) {
-      if (supply >= needed) msg = `✅ You're planning to make ${supply} items — more than the ${needed} you need to hit your $${goal} goal. Great buffer!`;
-      else msg = `⚠️ You need to sell ${needed} items, but only plan to make ${supply}. Make ${needed-supply} more, or lower your goal to $${(profit*supply).toFixed(0)}.`;
+      const extra = supply - needed;
+      const suggested = Math.ceil(needed * 0.2); // suggest 20% buffer
+      if (extra <= 0) {
+        msg = `⚠️ You need to sell ${needed} items, but only plan to make ${supply}. Make ${needed-supply} more, or lower your goal to $${(netProfit*supply).toFixed(0)}.`;
+      } else if (extra <= Math.ceil(needed * 0.1)) {
+        msg = `⚠️ You have just barely enough — ${supply} items covers your goal, but with no room for mistakes. Try to make ${suggested} more as a safety buffer!`;
+      } else if (extra <= Math.ceil(needed * 0.25)) {
+        msg = `👍 Pretty good! ${supply} items gives you a small buffer of ${extra} over your goal of ${needed}. A few extras couldn't hurt though!`;
+      } else {
+        msg = `✅ Great buffer! You're planning ${supply} items — ${extra} more than the ${needed} you need. You're well set for the fair!`;
+      }
     } else {
-      msg = `To earn $${goal}, sell ${needed} items at $${price.toFixed(2)} each. Each sale gives you $${profit.toFixed(2)} profit.`;
+      msg = `To earn $${goal}, sell ${needed} items at $${price.toFixed(2)} each.${S.donateOn ? ` After your ${S.donatePct}% donation, you keep $${netProfit.toFixed(2)}/item.` : ` Each sale gives you $${netProfit.toFixed(2)} profit.`}`;
     }
     document.getElementById('goalMsg').textContent = msg;
 
     if (supply > 0) {
       supBox.style.display = 'block';
-      supBox.className = 'flag ' + (supply >= needed ? 'g' : 'y');
-      supBox.innerHTML = supply >= needed
-        ? `<div class="fi">✅</div><div><div class="ft">Supply &amp; goal are aligned!</div><div class="fb">You have enough items to hit your earning goal at the fair.</div></div>`
-        : `<div class="fi">⚠️</div><div><div class="ft">Not quite enough items</div><div class="fb">You'd need ${needed-supply} more items to hit your goal. Can you make more before the fair?</div></div>`;
+      const extra = supply - needed;
+      const tight = extra >= 0 && extra <= Math.ceil(needed * 0.1);
+      supBox.className = 'flag ' + (supply < needed ? 'r' : tight ? 'y' : 'g');
+      if (supply < needed) {
+        supBox.innerHTML = `<div class="fi">🚨</div><div><div class="ft">Not enough items</div><div class="fb">You'd need ${needed-supply} more to hit your goal. Can you make more before the fair?</div></div>`;
+      } else if (tight) {
+        supBox.innerHTML = `<div class="fi">⚠️</div><div><div class="ft">Right on the edge — make a few more!</div><div class="fb">You only have ${extra} extra item${extra===1?'':'s'}. If ${extra===0?'any':'even a few'} don't sell, you'll miss your goal. Aim for ${Math.ceil(needed*1.2)} to be safe.</div></div>`;
+      } else {
+        supBox.innerHTML = `<div class="fi">✅</div><div><div class="ft">Supply &amp; goal are aligned!</div><div class="fb">You have a solid buffer of ${extra} extra items — you're well prepared for the fair!</div></div>`;
+      }
     }
-  } else if (goal > 0 && profit <= 0) {
+  } else if (goal > 0 && netProfit <= 0) {
     resBox.style.display = 'block';
     document.getElementById('goalBubbles').innerHTML = '';
-    document.getElementById('goalMsg').textContent = '⚠️ Your price needs to be higher than your cost first. Go back and raise your price!';
+    document.getElementById('goalMsg').textContent = profit <= 0
+      ? '⚠️ Your price needs to be higher than your cost first. Go back and raise your price!'
+      : `⚠️ After your ${S.donatePct}% charity donation there's nothing left. Either raise your price or lower the donation %.`;
   } else {
     resBox.style.display = 'none';
     supBox.style.display = 'none';
@@ -1096,13 +1312,17 @@ function updGoal() {
 // SUMMARY
 // ════════════════════════════════════════════════════════════════
 function buildSummary() {
-  const prod   = S.winner || 'Not chosen yet';
-  const cost   = S.totalCost || 0;
-  const price  = S.myPrice  || 0;
-  const profit = price - cost;
-  const supply = S.supplyN  || 0;
-  const goal   = S.earnGoal || 0;
-  const maxEarn = profit > 0 && supply > 0 ? '$' + (profit * supply).toFixed(2) : '—';
+  // Refresh calculated values before reading state
+  updBudget();
+
+  const prod      = S.winner || 'Not chosen yet';
+  const cost      = S.totalCost || 0;
+  const price     = S.myPrice   || 0;
+  const profit    = price - cost;
+  const netProfit = S.donateOn ? profit * (1 - S.donatePct/100) : profit;
+  const supply    = S.supplyN   || 0;
+  const goal      = S.earnGoal  || 0;
+  const maxEarn   = netProfit > 0 && supply > 0 ? '$' + (netProfit * supply).toFixed(2) : '—';
 
   const ideaData = ALL_IDEAS.find(i => i.n === prod);
   document.getElementById('plan-icon').textContent = ideaData ? ideaData.i : '🎪';
@@ -1110,12 +1330,24 @@ function buildSummary() {
   document.getElementById('plan-kid').textContent  = S.name ? `${S.name}'s Fair Business Plan — Kids Business Fair 2026` : 'Kids Business Fair 2026';
 
   document.getElementById('ps-prod').textContent   = prod;
-  document.getElementById('ps-cost').textContent   = '$' + cost.toFixed(2);
+  document.getElementById('ps-cost').textContent   = cost > 0 ? '$' + cost.toFixed(2) : 'Not calculated yet';
   document.getElementById('ps-price').textContent  = price > 0 ? '$' + price.toFixed(2) : 'Not set yet';
   document.getElementById('ps-profit').textContent = profit > 0 ? '$' + profit.toFixed(2) + ' per item ✅' : '—';
   document.getElementById('ps-supply').textContent = supply > 0 ? supply + ' items' : '—';
   document.getElementById('ps-earn').textContent   = goal > 0 ? '$' + goal : '—';
   document.getElementById('ps-max').textContent    = maxEarn;
+
+  // Charity rows
+  if (S.donateOn && profit > 0) {
+    const donate = profit * (S.donatePct / 100);
+    document.getElementById('ps-charity-row').style.display = 'flex';
+    document.getElementById('ps-keep-row').style.display    = 'flex';
+    document.getElementById('ps-charity').textContent = '$' + donate.toFixed(2) + '/item (' + S.donatePct + '%) 🎗️';
+    document.getElementById('ps-keep').textContent    = '$' + netProfit.toFixed(2) + '/item';
+  } else {
+    document.getElementById('ps-charity-row').style.display = 'none';
+    document.getElementById('ps-keep-row').style.display    = 'none';
+  }
 
   // Next steps
   const steps = [];
@@ -1129,8 +1361,9 @@ function buildSummary() {
   if (price <= 0 || profit <= 0) {
     steps.push({ t:'Set your selling price 🏷️', d:`A good price for ${prod || 'your product'} should be at least $${(cost * 1.3).toFixed(2)} to make a solid profit.` });
   } else {
-    const needed = profit > 0 ? Math.ceil(goal / profit) : 0;
-    steps.push({ t:`Make ${supply > 0 ? supply : '???'} items before fair day 📦`, d:`Each ${prod} you sell earns you $${profit.toFixed(2)} profit.${needed > 0 ? ` You need ${needed} sold to hit your goal — so start making them now!` : ''}` });
+    const needed = netProfit > 0 && goal > 0 ? Math.ceil(goal / netProfit) : 0;
+    const keepStr = S.donateOn ? ` After your ${S.donatePct}% donation, you keep $${netProfit.toFixed(2)}.` : ` That's $${netProfit.toFixed(2)} profit.`;
+    steps.push({ t:`Make ${supply > 0 ? supply : '???'} items before fair day 📦`, d:`Each ${prod} you sell earns $${profit.toFixed(2)}.${keepStr}${needed > 0 ? ` Sell ${needed} to hit your goal — start making them now!` : ''}` });
   }
 
   steps.push({ t:'Set up an amazing display 🎪', d:`A great fair table has a clear price sign, a colorful cover, and a sample to show off. Think about how to make your ${prod || 'product'} look amazing when people walk by!` });
@@ -1151,7 +1384,8 @@ function resetAll() {
     moneyPriority:'', timeAvail:'', fairVotes:{},
     winner:'', budgetMode:'item',
     matCost:0, timeCost:0, totalCost:0,
-    myPrice:0, earnGoal:0, supplyN:0, afford:'5-15'
+    myPrice:0, earnGoal:0, supplyN:0, afford:'5-15',
+    donateOn:false, donatePct:30
   });
   document.querySelectorAll('.tbtn.on, .inline-ropt.on, .ropt.on').forEach(el => el.classList.remove('on'));
   document.getElementById('kidName').value = '';
@@ -1159,6 +1393,10 @@ function resetAll() {
   document.getElementById('winnerBadge').style.display = 'none';
   document.getElementById('moneyNote').style.display = 'none';
   document.getElementById('timeNote').style.display = 'none';
+  const ct = document.getElementById('charityToggle');
+  if (ct) { ct.checked = false; }
+  document.getElementById('charity-inner').style.display = 'none';
+  document.getElementById('charity-result').style.display = 'none';
   rc = 0;
   go(1);
 }
