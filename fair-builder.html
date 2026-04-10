@@ -73,6 +73,14 @@
     .idea-item.crossed .idea-why  { text-decoration:line-through; }
     .crossed-label { display:none; font-size:0.72em; font-weight:800; color:#94a3b8; letter-spacing:0.05em; text-transform:uppercase; padding:2px 8px; background:#e2e8f0; border-radius:6px; white-space:nowrap; }
     .idea-item.crossed .crossed-label { display:inline; }
+    .override-btn { display:none; margin-top:8px; width:100%; background:none; border:2px dashed #cbd5e1; border-radius:10px; padding:6px 10px; font-family:inherit; font-size:0.8em; font-weight:700; color:#64748b; cursor:pointer; transition:all 0.15s; text-align:center; }
+    .override-btn:hover { border-color:#37C9C1; color:#0d9e97; background:#f0fdfc; }
+    .idea-item.crossed .override-btn { display:block; }
+    .idea-item.overridden { opacity:1 !important; background:white !important; border-color:#37C9C1 !important; }
+    .idea-item.overridden .idea-name { text-decoration:none !important; color:#1e293b !important; }
+    .idea-item.overridden .idea-why { text-decoration:none !important; }
+    .idea-item.overridden .override-btn { display:block; border-color:#37C9C1; color:#0d9e97; background:#f0fdfc; }
+    .idea-item.overridden .crossed-label { display:none; }
 
     /* Vote buttons */
     .vote-section { display:flex; flex-direction:column; gap:5px; }
@@ -509,6 +517,20 @@
       </div>
     </div>
 
+    <!-- Affordability (moved above price input so context is set first) -->
+    <div>
+      <div class="slabel">👛 What do fair visitors usually spend?</div>
+      <div class="hint">Pick what most buyers at your fair would pay — this helps you find the right price range.</div>
+      <div class="afford-grid">
+        <div class="ropt" data-g="afford" data-v="u5"    onclick="radA(this)"><div class="rl">Under $5</div><div class="rd">Budget buyers</div></div>
+        <div class="ropt" data-g="afford" data-v="5-15"  onclick="radA(this)"><div class="rl">$5 – $15</div><div class="rd">Most fair visitors</div></div>
+        <div class="ropt" data-g="afford" data-v="15-30" onclick="radA(this)"><div class="rl">$15 – $30</div><div class="rd">Willing to splurge</div></div>
+        <div class="ropt" data-g="afford" data-v="30p"   onclick="radA(this)"><div class="rl">$30+</div><div class="rd">Big spenders</div></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
     <!-- Suggested prices -->
     <div>
       <div class="slabel">💡 Suggested prices — click one to use it:</div>
@@ -535,44 +557,18 @@
 
     <div class="divider"></div>
 
-    <!-- Affordability -->
-    <div>
-      <div class="slabel">👛 What do fair visitors usually spend?</div>
-      <div class="afford-grid">
-        <div class="ropt" data-g="afford" data-v="u5"    onclick="radA(this)"><div class="rl">Under $5</div><div class="rd">Budget buyers</div></div>
-        <div class="ropt" data-g="afford" data-v="5-15"  onclick="radA(this)"><div class="rl">$5 – $15</div><div class="rd">Most fair visitors</div></div>
-        <div class="ropt" data-g="afford" data-v="15-30" onclick="radA(this)"><div class="rl">$15 – $30</div><div class="rd">Willing to splurge</div></div>
-        <div class="ropt" data-g="afford" data-v="30p"   onclick="radA(this)"><div class="rl">$30+</div><div class="rd">Big spenders</div></div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Charity -->
+    <!-- Charity (always on — no toggle) -->
     <div class="charity-box">
-      <div class="toggle-row">
-        <label class="toggle-sw">
-          <input type="checkbox" id="charityToggle" onchange="updCharity()" />
-          <span class="toggle-sl"></span>
-        </label>
-        <span class="toggle-lbl">🎗️ Donate a % of my profit to charity</span>
-      </div>
-      <div id="charity-inner" style="display:none">
-        <div class="hint" style="margin-top:8px;margin-bottom:0">Choose how much of your profit goes to charity — we'll show you exactly what you keep and adjust your break-even price.</div>
-        <div class="charity-pct-row">
-          <button class="pct-btn" data-pct="5"  onclick="setPct(this)">5%</button>
-          <button class="pct-btn" data-pct="10" onclick="setPct(this)">10%</button>
-          <button class="pct-btn" data-pct="15" onclick="setPct(this)">15%</button>
-          <button class="pct-btn" data-pct="20" onclick="setPct(this)">20%</button>
-          <button class="pct-btn" data-pct="25" onclick="setPct(this)">25%</button>
-          <button class="pct-btn on" data-pct="30" onclick="setPct(this)">30% ⭐</button>
+      <div class="slabel" style="color:#7c3aed; margin-bottom:6px">🎗️ Donate a % of your profit to charity</div>
+      <div class="hint" style="margin-bottom:10px">Every item you sell, a slice of the profit goes to a cause you care about — we'll show you exactly what you keep.</div>
+      <div class="charity-pct-row">
+        <button class="pct-btn on" data-pct="30" onclick="setPct(this)">30% ⭐</button>
+        <div style="display:flex;align-items:center;gap:8px;flex:2">
+          <span style="font-size:0.85em;font-weight:700;color:#7c3aed;white-space:nowrap">Own %:</span>
+          <input type="number" class="inp" id="customPct" placeholder="e.g. 15" min="1" max="99" style="font-size:0.85em;flex:1" oninput="updCharity()" />
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-          <span style="font-size:0.85em;font-weight:700;color:#7c3aed">Or type your own %:</span>
-          <input type="number" class="inp" id="customPct" placeholder="e.g. 12" min="1" max="99" style="width:90px;font-size:0.85em" oninput="updCharity()" />
-        </div>
-        <div class="charity-result" id="charity-result" style="display:none"></div>
       </div>
+      <div class="charity-result" id="charity-result" style="display:none"></div>
     </div>
 
   </div>
@@ -586,23 +582,37 @@
 <div class="screen" id="s7">
   <div class="sh">
     <div class="phase-pill">🎯 Step 4b — Sales Goal</div>
-    <div class="sh-title">How much do you want to earn? 🤑</div>
-    <div class="sh-sub">Tell us your goal and how many items you'll make — we'll check if they match!</div>
+    <div class="sh-title" id="s7-title">How much do you want to earn? 🤑</div>
+    <div class="sh-sub">Tell us your goals and how many items you'll make — we'll check if they match!</div>
   </div>
   <div class="card">
 
+    <!-- Two goal inputs -->
+    <div>
+      <div class="slabel" style="margin-bottom:4px">🎯 What are you aiming for? <span style="font-weight:600; color:#64748b; font-size:0.85em">(fill in one or both)</span></div>
+      <div class="hint">Set a goal for how much you want to keep for yourself, how much you want to donate to charity, or both!</div>
+    </div>
+
     <div style="display:flex; gap:10px; flex-wrap:wrap">
       <div style="flex:1; min-width:140px">
-        <div class="slabel">💵 My earning goal:</div>
+        <div class="slabel">💵 Money I want to keep:</div>
         <div class="pfix">
           <span class="pfix-sym">$</span>
-          <input type="number" class="inp" id="earnGoal" placeholder="e.g. 50" min="0" oninput="updGoal()" />
+          <input type="number" class="inp" id="keepGoal" placeholder="e.g. 40" min="0" oninput="updGoal()" />
         </div>
       </div>
       <div style="flex:1; min-width:140px">
-        <div class="slabel">📦 Items I plan to make:</div>
-        <input type="number" class="inp" id="supplyN" placeholder="e.g. 25" min="0" oninput="updGoal()" />
+        <div class="slabel">🎗️ Amount to donate:</div>
+        <div class="pfix">
+          <span class="pfix-sym">$</span>
+          <input type="number" class="inp" id="charityGoal" placeholder="e.g. 20" min="0" oninput="updGoal()" />
+        </div>
       </div>
+    </div>
+
+    <div style="flex:1; min-width:140px">
+      <div class="slabel">📦 Items I plan to make:</div>
+      <input type="number" class="inp" id="supplyN" placeholder="e.g. 25" min="0" oninput="updGoal()" />
     </div>
 
     <div id="goalResult" style="display:none">
@@ -630,8 +640,8 @@
 
     <div style="text-align:center; padding:8px 0 4px">
       <div id="plan-icon" style="font-size:2.2em; margin-bottom:8px">🎪</div>
+      <div id="plan-kid" style="font-size:1.1em; font-weight:900; color:#1F23B9; margin-bottom:4px"></div>
       <div id="plan-name" style="font-size:1.25em; font-weight:900; color:#1e293b"></div>
-      <div id="plan-kid"  style="font-size:0.85em; color:#64748b; margin-top:4px"></div>
     </div>
 
     <div class="snap-sec" style="background:#fff7ed; border:1.5px solid #fed7aa">
@@ -678,7 +688,9 @@ const S = {
   matCost:0, timeCost:0, totalCost:0,
   myPrice:0, earnGoal:0, supplyN:0,
   afford:'5-15',
-  donateOn:false, donatePct:30
+  donateOn:true, donatePct:30,
+  keepGoal:0, charityGoal:0,
+  manualIncludes:{}
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -782,6 +794,10 @@ function go(n) {
     if (!document.getElementById('budgetRows').children.length) addRow();
   }
   if (n === 6) prepPricing();
+  if (n === 7) {
+    const t = document.getElementById('s7-title');
+    if (t) t.textContent = S.name ? `How much do you want to earn, ${S.name}? 🤑` : 'How much do you want to earn? 🤑';
+  }
   if (n === 8) buildSummary();
 
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -902,18 +918,37 @@ function radFilter(el) {
   applyFilters();
 }
 
-function isCrossedByFilter(invest, time) {
+function isCrossedByFilter(invest, time, name) {
+  if (name && S.manualIncludes[name]) return false; // user explicitly included it
   if (S.moneyPriority === 'yes' && invest === 'high') return true;
   if (S.timeAvail === 'little' && (time === 'med' || time === 'long')) return true;
   if (S.timeAvail === 'med' && time === 'long') return true;
   return false;
 }
 
+function overrideIdea(name, btn) {
+  if (S.manualIncludes[name]) {
+    // Toggle off — re-apply filter
+    delete S.manualIncludes[name];
+  } else {
+    // Include despite filter
+    S.manualIncludes[name] = true;
+  }
+  applyFilters(); // re-runs on all items, which will pick up the override
+}
+
 function applyFilters() {
   document.querySelectorAll('.idea-filter-item').forEach(item => {
-    const crossed = isCrossedByFilter(item.dataset.invest, item.dataset.time)
-                 || S.fairVotes[item.dataset.name] === 'no';
+    const name    = item.dataset.name;
+    const overridden = !!S.manualIncludes[name];
+    const filterCross = isCrossedByFilter(item.dataset.invest, item.dataset.time, name)
+                     || S.fairVotes[name] === 'no';
+    const crossed = filterCross && !overridden;
     item.classList.toggle('crossed', crossed);
+    item.classList.toggle('overridden', overridden);
+    // Update override button label
+    const obtn = item.querySelector('.override-btn');
+    if (obtn) obtn.textContent = overridden ? '↩️ Re-apply filter for this idea' : '✋ Include this idea anyway';
   });
 
   const standing = document.querySelectorAll('.idea-filter-item:not(.crossed)').length;
@@ -979,7 +1014,8 @@ function buildFilterScreen() {
           <button class="vote-btn ${vote==='maybe'?'maybe-on':''}" onclick="setVote('${idea.n.replace(/'/g,"\\'")}','maybe',this)">🤔 Maybe</button>
           <button class="vote-btn ${vote==='no'?'no-on':''}"     onclick="setVote('${idea.n.replace(/'/g,"\\'")}','no',this)">❌ Nope</button>
         </div>
-      </div>`;
+      </div>
+      <button class="override-btn" onclick="overrideIdea('${idea.n.replace(/'/g,"\\'")}',this)">✋ Include this idea anyway</button>`;
 
     list.appendChild(div);
   });
@@ -1004,7 +1040,7 @@ function buildPickScreen() {
   list.innerHTML = '';
 
   const survivors = pool.filter(idea =>
-    !isCrossedByFilter(idea.invest, idea.time) && S.fairVotes[idea.n] !== 'no'
+    !isCrossedByFilter(idea.invest, idea.time, idea.n) && S.fairVotes[idea.n] !== 'no'
   );
 
   if (survivors.length === 0) {
@@ -1169,8 +1205,8 @@ function updPriceCheck() {
   if (price <= 0) { area.style.display = 'none'; updCharity(); return; }
   area.style.display = 'block';
 
-  // If charity is on, the effective break-even is higher — need more revenue to cover cost + donation
-  const effectiveCost = S.donateOn ? cost / (1 - S.donatePct/100) : cost;
+  // Charity is always on — effective break-even is higher (need more revenue to cover cost + donation)
+  const effectiveCost = cost / (1 - S.donatePct / 100);
   const be=cost, sweet0=effectiveCost*1.15, sweet1=affordMax*0.85, tooHigh=affordMax*1.15;
   let pct, desc, col;
   if (price < be) {
@@ -1180,16 +1216,12 @@ function updPriceCheck() {
   } else if (price < sweet0) {
     pct = 22 + ((price-be)/Math.max(sweet0-be,0.01))*18;
     const margin = Math.round(((price-cost)/price)*100);
-    desc = S.donateOn
-      ? `⚠️ ${margin}% margin — after your ${S.donatePct}% donation you might not make much. Push higher!`
-      : `⚠️ Only ${margin}% margin. You're covering costs — but push a little higher!`;
+    desc = `⚠️ ${margin}% margin — after your ${S.donatePct}% donation you might not make much. Push higher!`;
     col = '#d97706';
   } else if (price <= sweet1) {
     pct = 40 + ((price-sweet0)/Math.max(sweet1-sweet0,0.01))*35;
-    const keep = S.donateOn ? (price-cost)*(1-S.donatePct/100) : price-cost;
-    desc = S.donateOn
-      ? `✅ Sweet spot! After your ${S.donatePct}% donation you keep $${keep.toFixed(2)}/item — and customers can afford it.`
-      : `✅ Sweet spot! $${(price-cost).toFixed(2)} profit per item — and your customers can afford it.`;
+    const keep = (price-cost)*(1-S.donatePct/100);
+    desc = `✅ Sweet spot! After your ${S.donatePct}% donation you keep $${keep.toFixed(2)}/item — and customers can afford it.`;
     col = '#16a34a';
   } else if (price <= tooHigh) {
     pct = 75 + ((price-sweet1)/Math.max(tooHigh-sweet1,0.01))*15;
@@ -1211,24 +1243,24 @@ function updPriceCheck() {
 // CHARITY DONATION
 // ════════════════════════════════════════════════════════════════
 function updCharity() {
-  const toggle = document.getElementById('charityToggle');
-  if (!toggle) return;
-  S.donateOn = toggle.checked;
-  document.getElementById('charity-inner').style.display = S.donateOn ? 'block' : 'none';
-  if (!S.donateOn) { document.getElementById('charity-result').style.display = 'none'; return; }
+  S.donateOn = true; // charity is always on
   const customPct = parseInt(document.getElementById('customPct').value) || 0;
-  if (customPct > 0) S.donatePct = Math.min(customPct, 99);
+  if (customPct > 0) {
+    S.donatePct = Math.min(customPct, 99);
+    // De-select preset button if user typed a custom value
+    document.querySelectorAll('.pct-btn').forEach(b => b.classList.remove('on'));
+  }
   const price = S.myPrice || 0;
   const cost  = S.totalCost || 0;
+  const res   = document.getElementById('charity-result');
   if (price > cost) {
     const profit  = price - cost;
     const donate  = profit * (S.donatePct / 100);
     const keep    = profit - donate;
-    const res = document.getElementById('charity-result');
     res.style.display = 'block';
     res.innerHTML = `At $${price.toFixed(2)}: Profit $${profit.toFixed(2)}/item → 🎗️ Donate <strong>$${donate.toFixed(2)}</strong> → You keep <strong>$${keep.toFixed(2)}</strong>`;
   } else {
-    document.getElementById('charity-result').style.display = 'none';
+    res.style.display = 'none';
   }
 }
 
@@ -1244,66 +1276,94 @@ function setPct(btn) {
 // SALES GOAL
 // ════════════════════════════════════════════════════════════════
 function updGoal() {
-  const goal   = parseFloat(document.getElementById('earnGoal').value) || 0;
-  const supply = parseInt(document.getElementById('supplyN').value)    || 0;
-  const price  = S.myPrice || 0;
-  const cost   = S.totalCost || 0;
-  const profit = price - cost;
-  const netProfit = S.donateOn ? profit * (1 - S.donatePct/100) : profit;
-  S.earnGoal = goal; S.supplyN = supply;
+  const keepGoal    = parseFloat(document.getElementById('keepGoal').value)    || 0;
+  const charityGoal = parseFloat(document.getElementById('charityGoal').value) || 0;
+  const supply      = parseInt(document.getElementById('supplyN').value)        || 0;
+  const price       = S.myPrice    || 0;
+  const cost        = S.totalCost  || 0;
+  const profit      = price - cost;
+  const netProfit   = profit * (1 - S.donatePct / 100);  // per-item keep
+  const donatePerItem = profit * (S.donatePct / 100);    // per-item charity
+
+  S.keepGoal = keepGoal; S.charityGoal = charityGoal; S.supplyN = supply;
+  // Combined earnGoal for summary: total revenue needed for both goals
+  S.earnGoal = keepGoal + charityGoal;
 
   const resBox = document.getElementById('goalResult');
   const supBox = document.getElementById('supplyCheck');
+  const anyGoal = keepGoal > 0 || charityGoal > 0;
 
-  if (goal > 0 && netProfit > 0) {
-    const needed  = Math.ceil(goal / netProfit);
-    const maxEarn = (netProfit * supply).toFixed(2);
-    resBox.style.display = 'block';
-    const keepLbl = S.donateOn ? 'you keep/item' : 'profit / item';
-    document.getElementById('goalBubbles').innerHTML = `
-      <div class="bubble b-purple" style="flex:1"><div class="bv">${needed}</div><div class="bl">items to sell</div></div>
-      <div class="bubble b-green"  style="flex:1"><div class="bv">$${netProfit.toFixed(2)}</div><div class="bl">${keepLbl}</div></div>
-      ${supply > 0 ? `<div class="bubble b-blue" style="flex:1"><div class="bv">$${maxEarn}</div><div class="bl">max if sold out</div></div>` : ''}`;
+  if (!anyGoal) { resBox.style.display = 'none'; supBox.style.display = 'none'; return; }
 
-    let msg = '';
-    if (supply > 0) {
-      const extra = supply - needed;
-      const suggested = Math.ceil(needed * 0.2); // suggest 20% buffer
-      if (extra <= 0) {
-        msg = `⚠️ You need to sell ${needed} items, but only plan to make ${supply}. Make ${needed-supply} more, or lower your goal to $${(netProfit*supply).toFixed(0)}.`;
-      } else if (extra <= Math.ceil(needed * 0.1)) {
-        msg = `⚠️ You have just barely enough — ${supply} items covers your goal, but with no room for mistakes. Try to make ${suggested} more as a safety buffer!`;
-      } else if (extra <= Math.ceil(needed * 0.25)) {
-        msg = `👍 Pretty good! ${supply} items gives you a small buffer of ${extra} over your goal of ${needed}. A few extras couldn't hurt though!`;
-      } else {
-        msg = `✅ Great buffer! You're planning ${supply} items — ${extra} more than the ${needed} you need. You're well set for the fair!`;
-      }
-    } else {
-      msg = `To earn $${goal}, sell ${needed} items at $${price.toFixed(2)} each.${S.donateOn ? ` After your ${S.donatePct}% donation, you keep $${netProfit.toFixed(2)}/item.` : ` Each sale gives you $${netProfit.toFixed(2)} profit.`}`;
-    }
-    document.getElementById('goalMsg').textContent = msg;
-
-    if (supply > 0) {
-      supBox.style.display = 'block';
-      const extra = supply - needed;
-      const tight = extra >= 0 && extra <= Math.ceil(needed * 0.1);
-      supBox.className = 'flag ' + (supply < needed ? 'r' : tight ? 'y' : 'g');
-      if (supply < needed) {
-        supBox.innerHTML = `<div class="fi">🚨</div><div><div class="ft">Not enough items</div><div class="fb">You'd need ${needed-supply} more to hit your goal. Can you make more before the fair?</div></div>`;
-      } else if (tight) {
-        supBox.innerHTML = `<div class="fi">⚠️</div><div><div class="ft">Right on the edge — make a few more!</div><div class="fb">You only have ${extra} extra item${extra===1?'':'s'}. If ${extra===0?'any':'even a few'} don't sell, you'll miss your goal. Aim for ${Math.ceil(needed*1.2)} to be safe.</div></div>`;
-      } else {
-        supBox.innerHTML = `<div class="fi">✅</div><div><div class="ft">Supply &amp; goal are aligned!</div><div class="fb">You have a solid buffer of ${extra} extra items — you're well prepared for the fair!</div></div>`;
-      }
-    }
-  } else if (goal > 0 && netProfit <= 0) {
+  if (profit <= 0) {
     resBox.style.display = 'block';
     document.getElementById('goalBubbles').innerHTML = '';
-    document.getElementById('goalMsg').textContent = profit <= 0
-      ? '⚠️ Your price needs to be higher than your cost first. Go back and raise your price!'
-      : `⚠️ After your ${S.donatePct}% charity donation there's nothing left. Either raise your price or lower the donation %.`;
+    document.getElementById('goalMsg').textContent = '⚠️ Your price needs to be higher than your cost first. Go back and raise your price!';
+    supBox.style.display = 'none'; return;
+  }
+  if (netProfit <= 0 && keepGoal > 0) {
+    resBox.style.display = 'block';
+    document.getElementById('goalBubbles').innerHTML = '';
+    document.getElementById('goalMsg').textContent = `⚠️ After your ${S.donatePct}% charity donation there's nothing left to keep. Either raise your price or lower the donation %.`;
+    supBox.style.display = 'none'; return;
+  }
+
+  // How many items needed for each goal
+  const neededForKeep    = keepGoal > 0 && netProfit > 0    ? Math.ceil(keepGoal / netProfit)       : 0;
+  const neededForCharity = charityGoal > 0 && donatePerItem > 0 ? Math.ceil(charityGoal / donatePerItem) : 0;
+  const needed           = Math.max(neededForKeep, neededForCharity);
+
+  resBox.style.display = 'block';
+  let bubblesHTML = '';
+  if (keepGoal > 0) {
+    bubblesHTML += `<div class="bubble b-green" style="flex:1"><div class="bv">${neededForKeep}</div><div class="bl">items for keep goal</div></div>`;
+  }
+  if (charityGoal > 0) {
+    bubblesHTML += `<div class="bubble b-purple" style="flex:1"><div class="bv">${neededForCharity}</div><div class="bl">items for charity goal</div></div>`;
+  }
+  if (supply > 0) {
+    const maxKeep    = (netProfit * supply).toFixed(2);
+    bubblesHTML += `<div class="bubble b-blue" style="flex:1"><div class="bv">$${maxKeep}</div><div class="bl">max keep if sold out</div></div>`;
+  }
+  document.getElementById('goalBubbles').innerHTML = bubblesHTML;
+
+  // Narrative message
+  let msg = '';
+  const parts = [];
+  if (keepGoal > 0)    parts.push(`keep $${keepGoal}`);
+  if (charityGoal > 0) parts.push(`donate $${charityGoal}`);
+  const goalStr = parts.join(' and ');
+
+  if (supply > 0) {
+    const extra = supply - needed;
+    const suggested = Math.ceil(needed * 0.2);
+    if (extra < 0) {
+      msg = `⚠️ To ${goalStr}, you need to sell ${needed} items, but only plan to make ${supply}. Make ${needed - supply} more, or lower your goal.`;
+    } else if (extra <= Math.ceil(needed * 0.1)) {
+      msg = `⚠️ Barely enough! ${supply} items just covers your goal, but with no safety buffer. Try to make ${suggested} more!`;
+    } else if (extra <= Math.ceil(needed * 0.25)) {
+      msg = `👍 Pretty good! ${supply} items gives you a small buffer of ${extra} over the ${needed} you need to ${goalStr}.`;
+    } else {
+      msg = `✅ Great buffer! You're planning ${supply} items — ${extra} more than the ${needed} you need. You're well set!`;
+    }
   } else {
-    resBox.style.display = 'none';
+    msg = `To ${goalStr}, you need to sell ${needed} items at $${price.toFixed(2)} each. You keep $${netProfit.toFixed(2)}/item after your ${S.donatePct}% donation.`;
+  }
+  document.getElementById('goalMsg').textContent = msg;
+
+  if (supply > 0) {
+    supBox.style.display = 'block';
+    const extra = supply - needed;
+    const tight = extra >= 0 && extra <= Math.ceil(needed * 0.1);
+    supBox.className = 'flag ' + (supply < needed ? 'r' : tight ? 'y' : 'g');
+    if (supply < needed) {
+      supBox.innerHTML = `<div class="fi">🚨</div><div><div class="ft">Not enough items</div><div class="fb">You'd need ${needed - supply} more to hit your goal. Can you make more before the fair?</div></div>`;
+    } else if (tight) {
+      supBox.innerHTML = `<div class="fi">⚠️</div><div><div class="ft">Right on the edge — make a few more!</div><div class="fb">You only have ${extra} extra item${extra===1?'':'s'}. Aim for ${Math.ceil(needed * 1.2)} to be safe.</div></div>`;
+    } else {
+      supBox.innerHTML = `<div class="fi">✅</div><div><div class="ft">Supply &amp; goal are aligned!</div><div class="fb">You have a solid buffer of ${extra} extra items — you're well prepared for the fair!</div></div>`;
+    }
+  } else {
     supBox.style.display = 'none';
   }
 }
@@ -1319,26 +1379,29 @@ function buildSummary() {
   const cost      = S.totalCost || 0;
   const price     = S.myPrice   || 0;
   const profit    = price - cost;
-  const netProfit = S.donateOn ? profit * (1 - S.donatePct/100) : profit;
-  const supply    = S.supplyN   || 0;
-  const goal      = S.earnGoal  || 0;
+  const netProfit = profit * (1 - S.donatePct / 100);
+  const supply    = S.supplyN  || 0;
+  const goal      = S.earnGoal || 0;
   const maxEarn   = netProfit > 0 && supply > 0 ? '$' + (netProfit * supply).toFixed(2) : '—';
 
   const ideaData = ALL_IDEAS.find(i => i.n === prod);
   document.getElementById('plan-icon').textContent = ideaData ? ideaData.i : '🎪';
+  document.getElementById('plan-kid').textContent  = S.name ? `${S.name}'s Fair Business Plan 🌟` : 'Fair Business Plan';
   document.getElementById('plan-name').textContent = prod;
-  document.getElementById('plan-kid').textContent  = S.name ? `${S.name}'s Fair Business Plan — Kids Business Fair 2026` : 'Kids Business Fair 2026';
 
   document.getElementById('ps-prod').textContent   = prod;
   document.getElementById('ps-cost').textContent   = cost > 0 ? '$' + cost.toFixed(2) : 'Not calculated yet';
   document.getElementById('ps-price').textContent  = price > 0 ? '$' + price.toFixed(2) : 'Not set yet';
   document.getElementById('ps-profit').textContent = profit > 0 ? '$' + profit.toFixed(2) + ' per item ✅' : '—';
   document.getElementById('ps-supply').textContent = supply > 0 ? supply + ' items' : '—';
-  document.getElementById('ps-earn').textContent   = goal > 0 ? '$' + goal : '—';
-  document.getElementById('ps-max').textContent    = maxEarn;
+  const earnParts = [];
+  if (S.keepGoal > 0)    earnParts.push(`💵 Keep $${S.keepGoal}`);
+  if (S.charityGoal > 0) earnParts.push(`🎗️ Donate $${S.charityGoal}`);
+  document.getElementById('ps-earn').textContent = earnParts.length ? earnParts.join(' · ') : (goal > 0 ? '$' + goal : '—');
+  document.getElementById('ps-max').textContent  = maxEarn;
 
-  // Charity rows
-  if (S.donateOn && profit > 0) {
+  // Charity rows — always shown (charity is always on)
+  if (profit > 0) {
     const donate = profit * (S.donatePct / 100);
     document.getElementById('ps-charity-row').style.display = 'flex';
     document.getElementById('ps-keep-row').style.display    = 'flex';
@@ -1362,7 +1425,7 @@ function buildSummary() {
     steps.push({ t:'Set your selling price 🏷️', d:`A good price for ${prod || 'your product'} should be at least $${(cost * 1.3).toFixed(2)} to make a solid profit.` });
   } else {
     const needed = netProfit > 0 && goal > 0 ? Math.ceil(goal / netProfit) : 0;
-    const keepStr = S.donateOn ? ` After your ${S.donatePct}% donation, you keep $${netProfit.toFixed(2)}.` : ` That's $${netProfit.toFixed(2)} profit.`;
+    const keepStr = ` After your ${S.donatePct}% donation, you keep $${netProfit.toFixed(2)}/item.`;
     steps.push({ t:`Make ${supply > 0 ? supply : '???'} items before fair day 📦`, d:`Each ${prod} you sell earns $${profit.toFixed(2)}.${keepStr}${needed > 0 ? ` Sell ${needed} to hit your goal — start making them now!` : ''}` });
   }
 
@@ -1385,18 +1448,21 @@ function resetAll() {
     winner:'', budgetMode:'item',
     matCost:0, timeCost:0, totalCost:0,
     myPrice:0, earnGoal:0, supplyN:0, afford:'5-15',
-    donateOn:false, donatePct:30
+    donateOn:true, donatePct:30,
+    keepGoal:0, charityGoal:0,
+    manualIncludes:{}
   });
+  ['keepGoal','charityGoal','supplyN'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.querySelectorAll('.tbtn.on, .inline-ropt.on, .ropt.on').forEach(el => el.classList.remove('on'));
   document.getElementById('kidName').value = '';
   document.getElementById('budgetRows').innerHTML = '';
   document.getElementById('winnerBadge').style.display = 'none';
   document.getElementById('moneyNote').style.display = 'none';
   document.getElementById('timeNote').style.display = 'none';
-  const ct = document.getElementById('charityToggle');
-  if (ct) { ct.checked = false; }
-  document.getElementById('charity-inner').style.display = 'none';
   document.getElementById('charity-result').style.display = 'none';
+  // Reset 30% as default selected charity button
+  document.querySelectorAll('.pct-btn').forEach(b => b.classList.toggle('on', b.dataset.pct === '30'));
+  document.getElementById('customPct').value = '';
   rc = 0;
   go(1);
 }
