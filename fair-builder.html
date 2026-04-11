@@ -67,19 +67,24 @@
     .tag-med   { background:#fef9c3; color:#a16207; }
     .tag-long  { background:#ffe4e6; color:#be123c; }
 
-    /* Crossed-out state */
-    .idea-item.crossed { opacity:0.32; background:#f8fafc; }
+    /* Crossed-out state — dim the content, NOT the whole card, so the button stays bright */
+    .idea-item.crossed { background:#f8fafc; border-color:#e2e8f0; }
+    .idea-item.crossed .idea-top  { opacity:0.35; }
+    .idea-item.crossed .vote-section { opacity:0.35; pointer-events:none; }
     .idea-item.crossed .idea-name { text-decoration:line-through; color:#94a3b8; }
     .idea-item.crossed .idea-why  { text-decoration:line-through; }
     .crossed-label { display:none; font-size:0.72em; font-weight:800; color:#94a3b8; letter-spacing:0.05em; text-transform:uppercase; padding:2px 8px; background:#e2e8f0; border-radius:6px; white-space:nowrap; }
     .idea-item.crossed .crossed-label { display:inline; }
-    .override-btn { display:none; margin-top:8px; width:100%; background:none; border:2px dashed #cbd5e1; border-radius:10px; padding:6px 10px; font-family:inherit; font-size:0.8em; font-weight:700; color:#64748b; cursor:pointer; transition:all 0.15s; text-align:center; }
-    .override-btn:hover { border-color:#37C9C1; color:#0d9e97; background:#f0fdfc; }
+    .override-btn { display:none; margin-top:8px; width:100%; background:#fff7ed; border:2px solid #E55937; border-radius:10px; padding:8px 10px; font-family:inherit; font-size:0.82em; font-weight:800; color:#E55937; cursor:pointer; transition:all 0.15s; text-align:center; }
+    .override-btn:hover { background:#E55937; color:white; }
     .idea-item.crossed .override-btn { display:block; }
-    .idea-item.overridden { opacity:1 !important; background:white !important; border-color:#37C9C1 !important; }
-    .idea-item.overridden .idea-name { text-decoration:none !important; color:#1e293b !important; }
-    .idea-item.overridden .idea-why { text-decoration:none !important; }
-    .idea-item.overridden .override-btn { display:block; border-color:#37C9C1; color:#0d9e97; background:#f0fdfc; }
+    .idea-item.overridden { background:white; border-color:#37C9C1; }
+    .idea-item.overridden .idea-top { opacity:1; }
+    .idea-item.overridden .vote-section { opacity:1; pointer-events:auto; }
+    .idea-item.overridden .idea-name { text-decoration:none; color:#1e293b; }
+    .idea-item.overridden .idea-why { text-decoration:none; }
+    .idea-item.overridden .override-btn { display:block; background:#f0fdfc; border-color:#37C9C1; color:#0d9e97; }
+    .idea-item.overridden .override-btn:hover { background:#37C9C1; color:white; }
     .idea-item.overridden .crossed-label { display:none; }
 
     /* Vote buttons */
@@ -517,7 +522,13 @@
       </div>
     </div>
 
-    <!-- Affordability (moved above price input so context is set first) -->
+    <!-- Suggested prices -->
+    <div>
+      <div class="slabel">💡 Suggested prices — click one to use it:</div>
+      <div class="bubble-row" id="suggRow"></div>
+    </div>
+
+    <!-- Affordability -->
     <div>
       <div class="slabel">👛 What do fair visitors usually spend?</div>
       <div class="hint">Pick what most buyers at your fair would pay — this helps you find the right price range.</div>
@@ -530,12 +541,6 @@
     </div>
 
     <div class="divider"></div>
-
-    <!-- Suggested prices -->
-    <div>
-      <div class="slabel">💡 Suggested prices — click one to use it:</div>
-      <div class="bubble-row" id="suggRow"></div>
-    </div>
 
     <!-- My price input -->
     <div>
@@ -669,6 +674,9 @@
     <div style="text-align:center; margin-top:4px">
       <button onclick="resetAll()" style="background:#f8fafc; border:2px solid #e2e8f0; padding:10px 22px; border-radius:10px; cursor:pointer; color:#64748b; font-size:0.88em; font-weight:700; font-family:inherit">🔄 Start Over with a New Idea</button>
     </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-s" onclick="go(7)">← Back</button>
   </div>
 </div>
 
