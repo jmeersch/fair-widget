@@ -1,0 +1,6 @@
+{
+  "name": "fair-widget",
+  "redirects": [
+    { "source": "/", "destination": "/fair-builder.html", "permanent": false }
+  ]
+}
